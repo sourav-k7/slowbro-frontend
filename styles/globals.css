@@ -4,17 +4,21 @@
 
 html,
 body {
-	background: #0F1319;
+  background: #0f1319;
   padding: 0;
   margin: 0;
   font-family: "Montserrat", sans-serif;
-  color:white;
+  color: white;
 }
 
-.input-field{
-@apply form-input bg-[#4c4f57] text-white border-none focus:border-none focus:ring-0 w-full rounded py-2 px-3;
+body::-webkit-scrollbar {
+  display: none;
 }
 
-.btn-primary{
-  @apply bg-seconday w-full text-white py-2 rounded px-3 ;
+.input-field {
+  @apply form-input bg-[#4c4f57] text-white border-none focus:border-none focus:ring-0 w-full rounded py-2 px-3;
+}
+
+.btn-primary {
+  @apply bg-seconday w-full text-white py-2 rounded px-3;
 }

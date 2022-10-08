@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+	background: #0F1319;
+  padding: 0;
+  margin: 0;
+  font-family: "Montserrat", sans-serif;
+  height: 100%;
+}
+
+.input-field{
+@apply form-input bg-[#4c4f57] text-white border-none focus:border-none focus:ring-0 w-full rounded py-2 px-3;
+}
+
+.btn-primary{
+  @apply bg-seconday w-full text-white py-2 rounded px-3 ;
+}

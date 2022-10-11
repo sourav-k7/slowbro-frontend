@@ -25,7 +25,7 @@ export default function ToggleTaskList({
 
 	return (
 		<div className='bg-gray-900 p-3 rounded-md font-semibold my-2' onClick={onToggleList}>
-			<div className='flex justify-between my-1 items-center cursor-pointer'			>
+			<div className='flex justify-between my-1 items-center cursor-pointer'>
 				{title}
 
 				<animated.div style={toggleWrapperAnimatedStyle}>

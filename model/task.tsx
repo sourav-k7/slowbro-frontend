@@ -22,7 +22,7 @@ export interface Subtask{
 }
 
 export enum TaskStatus{
-	unstarted,
-	started,
-	completed
+	unstarted='Unstarted',
+	started='Started',
+	completed='Completed'
 }

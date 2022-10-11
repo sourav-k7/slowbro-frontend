@@ -16,9 +16,13 @@ body::-webkit-scrollbar {
 }
 
 .input-field {
-  @apply form-input bg-[#4c4f57] text-white border-none focus:border-none focus:ring-0 w-full rounded py-2 px-3;
+  @apply form-input bg-slate-800 text-white border-none focus:border-none focus:ring-0 rounded py-2 px-3;
+}
+
+.multiline-input-field{
+  @apply form-input bg-slate-800 text-white border-none focus:border-none focus:ring-0 rounded py-2 px-3 ;
 }
 
 .btn-primary {
-  @apply bg-seconday w-full text-white py-2 rounded px-3;
+  @apply bg-seconday text-white py-2 rounded px-3;
 }

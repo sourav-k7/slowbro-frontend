@@ -24,12 +24,17 @@ export default function Sidebar({isSidebarOpen}:PropTypes) {
 				<div className='font-semibold '>Description</div>
 				<textarea className='multiline-input-field mb-3 w-full' />
 				<div className='font-semibold '>Subtask</div>
-				<div className='flex flex-row mb-3'>
-					<input className='input-field w-full' />
+				<div className='flex flex-col items-start mb-3'>
+						<textarea className='multiline-input-field w-full' placeholder='Enter Subtask' />
+					<button className='bg-slate-400 text-slate-900 px-3 mt-2 rounded'>Add Subtask</button>
 				</div>
 				<div className='font-semibold flex items-center mb-3'>Point&nbsp;:&nbsp;<input className='input-field w-14' /></div>
 
 				<div className='font-semibold'>Doubt</div>
+				<div className='flex flex-col items-start mb-3'>
+						<textarea className='multiline-input-field w-full' placeholder='Enter Question' />
+					<button className='bg-slate-400 text-slate-900 px-3 mt-2 rounded'>Add Question</button>
+				</div>
 				<div className='font-semibold'>Comment</div>
 				<textarea className='multiline-input-field mb-3 w-full' />
 				<div><button className='btn-primary mr-3'>Save</button><button>cancel</button></div>

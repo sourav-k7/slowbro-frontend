@@ -59,10 +59,6 @@ export default function Home() {
 						<DropDownMenu selectedOption={'Project'} Options={['proj1','proj2','proj3']} onOptionClick={()=>{}} />
 					</div>
 				</div>
-				<button onClick={() => setSelectedTask(state => !state)}>sidebar</button>
-
-
-
 				<ToggleTaskList title={"Today's completed task"} >
 				{	boxes.map((ele,index)=>
 					<TaskTitleTile handleDrag={handleDrag} handleDrop={handleDrop} title={ele.color} id={ele.id} key={index} />

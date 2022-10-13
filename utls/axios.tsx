@@ -1,17 +1,13 @@
 import axios from 'axios';
+import { ApiConstants } from './api_constant';
 let token = '';
 const instance = axios.create({
-
-	// baseURL: 'https://api.yocto.care/api/v1',
-	baseURL: process.env.BASE_URL+'/api/v1',
-	// baseURL: 'https://3018-182-77-112-107.ngrok.io/api/v1'
-
-
+	baseURL : ApiConstants.baseUrl ,
 });
 
 instance.interceptors.request.use((req) => {
 	if (typeof window !== 'undefined')
-	token = localStorage.getItem(`yhp-auth`)??'';
+	token = localStorage.getItem(`slowbro-token`)??'';
 	req!.headers!.authorization = `Bearer ${token}`;
 	return req;
 });

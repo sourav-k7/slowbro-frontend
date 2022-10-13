@@ -1,52 +1,78 @@
 import Image from 'next/image'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Sidebar from '../components/layout/sidebar';
 import ToggleTaskList from '../components/layout/toggle_list'
 import ActiveTile from '../components/active_tile';
 import bugImage from '../public/bug.png'
 import TaskTitleTile from '../components/task_title_tile';
 import DropDownMenu from '../components/layout/drop_down_menu';
+import { useRouter } from 'next/router';
+
+
+// export async function getServerSideProps() {
+// 	// Fetch data from external API
+// 	const res = await fetch(`https://.../data`)
+// 	const data = await res.json()
+
+// 	// Pass data to the page via props
+// 	return { props: { data } }
+//   }
 
 
 export default function Home() {
+	const router = useRouter();
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		if (localStorage.getItem('slowbro-token') == null) {
+			router.replace('/');
+		}
+		else {
+			setLoading(false);
+		}
+	}, [router])
 	const [selectedTask, setSelectedTask] = useState(false);
 	const [dragId, setDragId] = useState();
 	const [boxes, setBoxes] = useState([
 		{
-		  id: "Box-1",
-		  color: "red",
-		  order: 1
+			id: "Box-1",
+			color: "red",
+			order: 1
 		},
 		{
-		  id: "Box-2",
-		  color: "green",
-		  order: 2
+			id: "Box-2",
+			color: "green",
+			order: 2
 		},
 		{
-		  id: "Box-3",
-		  color: "blue",
-		  order: 3
+			id: "Box-3",
+			color: "blue",
+			order: 3
 		}
-	  ]);
+	]);
 
-	const handleDrag = (ev:any) => {
-	  setDragId(ev.currentTarget.id);
+	const handleDrag = (ev: any) => {
+		setDragId(ev.currentTarget.id);
 	};
 
-	function swapElements(arr:any, i1:number, i2:number) {
-		let tempArr=[...arr];
+	function swapElements(arr: any, i1: number, i2: number) {
+		let tempArr = [...arr];
 		[tempArr[i1], tempArr[i2]] = [tempArr[i2], tempArr[i1]];
 		return tempArr;
-	  }
+	}
 
-	const handleDrop = (ev:any) => {
+	const handleDrop = (ev: any) => {
 		const dragBox = boxes.findIndex((box) => box.id === dragId);
 		const dropBox = boxes.findIndex((box) => box.id === ev.currentTarget.id);
-		const newBoxState = swapElements(boxes,dragBox,dropBox);
+		const newBoxState = swapElements(boxes, dragBox, dropBox);
 		setBoxes(newBoxState);
-	  };
+	};
 
-	
+
+
+	if (loading) {
+		return <div></div>;
+	}
 
 	return (
 		<div className='overflow-x-hidden min-h-screen flex scroll'>
@@ -56,12 +82,12 @@ export default function Home() {
 					<Image src={bugImage} width='100' height={100} alt='bug.png' />
 					<div className=''>
 						<h1 className='text-6xl font-bold '>Tasks</h1>
-						<DropDownMenu selectedOption={'Project'} Options={['proj1','proj2','proj3']} onOptionClick={()=>{}} />
+						<DropDownMenu selectedOption={'Project'} Options={['proj1', 'proj2', 'proj3']} onOptionClick={() => { }} />
 					</div>
 				</div>
 				<ToggleTaskList title={"Today's completed task"} >
-				{	boxes.map((ele,index)=>
-					<TaskTitleTile handleDrag={handleDrag} handleDrop={handleDrop} title={ele.color} id={ele.id} key={index} />
+					{boxes.map((ele, index) =>
+						<TaskTitleTile handleDrag={handleDrag} handleDrop={handleDrop} title={ele.color} id={ele.id} key={index} />
 					)}
 				</ToggleTaskList>
 				<ActiveTile />

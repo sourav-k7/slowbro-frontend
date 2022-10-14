@@ -3,7 +3,6 @@ import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { getProfile, loginRequest } from '../redux/user';
 import { useAppDispatch } from '../hooks/redux_hooks';
-import Loader from '../components/layout/loader';
 
 
 const Home: NextPage = () => {

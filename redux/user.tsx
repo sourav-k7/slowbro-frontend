@@ -45,14 +45,15 @@ export const getProfile = createAsyncThunk('user/getProfile',async ()=>{
 	return res.data;
 })
 
-
+//! add all new variable to logout reducer
 const userSlice = createSlice({
 	name:'user',
 	initialState,
 	reducers:{
-		// addTask:(state:any,action:any)=>{
-
-		// }
+		logout:(state)=>{
+			state.name = '';
+			state.email = '';
+		},
 	},
 	extraReducers:builder =>{
 		builder
@@ -101,5 +102,5 @@ const userSlice = createSlice({
 })
 
 export default userSlice.reducer;
-// export const {} = userSlice.actions;
+export const {logout} = userSlice.actions;
 

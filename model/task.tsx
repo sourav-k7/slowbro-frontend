@@ -1,23 +1,23 @@
 export interface Task{
-	task:String,
-	description:String,
-	img_url:String,
+	task:string,
+	description:string,
+	img_url:string,
 	subtask:Subtask[],
 	status:TaskStatus,
-	completionTime:String,
+	completionTime:string,
 	point:Number,
 	doubt:Doubt[],
-	comment:String[],
-	project:String,
+	comment:string[],
+	project:string,
 }
 
 export interface Doubt{
-	question:String,
-	answer?:String,
+	question:string,
+	answer?:string,
 }
 
 export interface Subtask{
-	task:String,
+	task:string,
 	status:TaskStatus,
 }
 

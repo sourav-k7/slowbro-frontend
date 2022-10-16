@@ -4,4 +4,7 @@ export abstract class ApiConstants {
 	static readonly loginApi : string =  '/auth/login';
 	static readonly registractionApi : string =  '/auth/signup';
 	static readonly getProfileApi:string = '/auth/profile';
+
+	//project
+	static readonly newProject:string =  '/project/new';
 }

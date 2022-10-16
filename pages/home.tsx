@@ -12,12 +12,25 @@ import { useAppDispatch } from '../hooks/redux_hooks';
 import { logout } from '../redux/user';
 import { BsPlus } from 'react-icons/bs';
 import Modal from '../components/layout/modal';
+import { createProject } from '../redux/services/taskServices';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
+import { TaskStateType } from '../redux/task';
+import { Project } from '../model/project';
 
 
 
 export default function Home() {
 	const router = useRouter();
 	const [loading, setLoading] = useState(true);
+	const dispatch = useAppDispatch();
+	const [selectedTask, setSelectedTask] = useState(false);
+	const [dragId, setDragId] = useState();
+	const [isProjectModalVisible, setIsProjectModelVisible] = useState(false);
+	const [newProjectName, setNewProjectName] = useState('');
+	const taskState = useSelector<RootState ,TaskStateType>((state)=>state.task);
+	const [selectedProject,setSelectedProject] = useState<Project>();
+
 
 	useEffect(() => {
 		if (localStorage.getItem('slowbro-token') == null) {
@@ -28,11 +41,12 @@ export default function Home() {
 		}
 	}, [router])
 
-	const dispatch = useAppDispatch();
-	const [selectedTask, setSelectedTask] = useState(false);
-	const [dragId, setDragId] = useState();
-	const [isProjectModalVisible,setIsProjectModelVisible] = useState(false);
-	
+	useEffect(()=>{
+		if(taskState.projects.length>0){
+			setSelectedProject(taskState.projects[0]);
+		}
+	},[])
+
 	const [boxes, setBoxes] = useState([
 		{
 			id: "Box-1",
@@ -70,15 +84,17 @@ export default function Home() {
 
 
 	async function onlogout() {
-		console.log('in logout');
 		await dispatch<any>(logout());
 		localStorage.removeItem('slowbro-token');
 		router.replace('/');
 	}
 
-	function toggleProjectModalVisibility(){
-		console.log('home modal visi');
-		setIsProjectModelVisible(state=>!state);
+	function toggleProjectModalVisibility() {
+		setIsProjectModelVisible(state => !state);
+	}
+
+	function onCreateNewProject() {
+		dispatch<any>(createProject({ name: newProjectName }));
 	}
 
 	if (loading) {
@@ -98,7 +114,7 @@ export default function Home() {
 					<div className=''>
 						<h1 className='text-6xl font-bold '>Tasks</h1>
 						<div className='flex items-center gap-1'>
-							<DropDownMenu selectedOption={'Project'} Options={['proj1', 'proj2', 'proj3']} onOptionClick={() => { }} />
+							<DropDownMenu selectedOption={selectedProject!.name} Options={taskState.projects.map(proj=>proj.name)} onOptionClick={() => { }} />
 							<button className='bg-slate-700 rounded' onClick={toggleProjectModalVisibility}>
 								<BsPlus size={30} />
 							</button>
@@ -123,12 +139,19 @@ export default function Home() {
 				</ToggleTaskList>
 			</div>
 			<Sidebar isSidebarOpen={selectedTask} />
-			
-           {isProjectModalVisible && <Modal
-		   isVisible = {isProjectModalVisible}
-              onClose={toggleProjectModalVisibility}
-            >
-				Project model
+
+			{isProjectModalVisible && <Modal
+				isVisible={isProjectModalVisible}
+				onClose={toggleProjectModalVisibility}
+			>
+				<div className='w-80'>
+					<div>Project name</div>
+					<input className='input-field mb-3 w-full' onChange={(event) => { setNewProjectName(event.target.value) }} />
+					<div>
+						<button className='btn-primary mr-3' onClick={onCreateNewProject}>Create</button>
+						<button onClick={toggleProjectModalVisibility}>cancel</button>
+					</div>
+				</div>
 			</Modal>}
 		</div>
 	)

@@ -34,7 +34,7 @@ export default function ActiveTile() {
 			<div className='font-semibold'>Doubt</div>
 			<div className='bg-slate-700 mb-3 p-3 rounded'>
 
-				<QuestionTile question={'what to do in this task?'} answer={'some temp answer'} />
+				{/* <QuestionTile question={'what to do in this task?'} answer={'some temp answer'} bgColor={'bg-slate-600'} /> */}
 			</div>
 			<div className='font-semibold'>Comments</div>
 			<div className=" bg-slate-700 mb-1 p-3 rounded">

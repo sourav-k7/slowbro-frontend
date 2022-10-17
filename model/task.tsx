@@ -6,9 +6,9 @@ export interface Task{
 	subtask:Subtask[],
 	status:TaskStatus,
 	completionTime:string,
-	point:Number,
+	point:number,
 	doubt:Doubt[],
-	comment:string[],
+	comments:string[],
 	project:string,
 }
 

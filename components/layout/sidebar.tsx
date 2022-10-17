@@ -1,48 +1,200 @@
-import React,{useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import { animated, useSpring } from 'react-spring'
-import {AiOutlineClose} from 'react-icons/ai';
-import { Task } from '../../model/task';
+import { AiOutlineClose } from 'react-icons/ai';
+import { Task, Subtask, Doubt, TaskStatus } from '../../model/task';
+import QuestionTile from './question_tile';
+import { useAppDispatch } from '../../hooks/redux_hooks';
 
 interface PropTypes {
-	isSidebarOpen:boolean,
-	onClose:()=>void,
-	task:Task | undefined,
+	isSidebarOpen: boolean,
+	onClose: () => void,
+	task: Task | null,
 }
 
-export default function Sidebar({isSidebarOpen,onClose,task}:PropTypes) {
+export default function Sidebar({ isSidebarOpen, onClose, task }: PropTypes) {
 	let sidebarWidth = 300;
-	
-	if(typeof window !=='undefined'){
-		sidebarWidth=(2*window.innerWidth)/5;
+	const [name, setName] = useState('');
+	const [description, setDescription] = useState('');
+	const [subTask, setSubTask] = useState<Subtask[]>([]);
+	const [newSubTaskInput, setNewSubtaskInput] = useState('');
+	const [point, setPoint] = useState<number>();
+	const [doubt, setDoubt] = useState<Doubt[]>([]);
+	const [newDoubtInput, setNewDoubtInput] = useState('');
+	const [comments, setComments] = useState<string[]>([]);
+	const [newCommentInput, setNewCommentInput] = useState('');
+	const dispatch = useAppDispatch();
+
+
+	if (typeof window !== 'undefined') {
+		sidebarWidth = (2 * window.innerWidth) / 5;
 	}
+
 	const sidebarStyle = useSpring({
-	  width:isSidebarOpen?sidebarWidth:0
+		width: isSidebarOpen ? sidebarWidth : 0
 	});
 
-  return (
-	<animated.div style={sidebarStyle} className={`overflow-x-hidden  `}>
+	useEffect(() => {
+		if (task != null) {
+			setName(task.task);
+			setDescription(task.description);
+			setSubTask(task.subtask);
+			setPoint(task.point);
+			setDoubt(task.doubt);
+			setComments(task.comment);
+		}
+	}, [])
+
+	function removeSubTask(rmTask: Subtask) {
+		setSubTask(state => state.filter(tk => tk.task != rmTask.task))
+	}
+
+	function addSubTask() {
+		if (newSubTaskInput != '') {
+			setSubTask(state => [
+				...state,
+				{
+					task: newSubTaskInput,
+					status: TaskStatus.unstarted,
+				} as Subtask
+			])
+			setNewSubtaskInput('');
+		}
+	}
+
+	function removeDoubt(rmDomain: Doubt) {
+		setDoubt(state => state.filter(dbt => dbt.question != rmDomain.question))
+	}
+
+	function addDoubt() {
+		if (newDoubtInput != '') {
+			setDoubt(state => [
+				...state,
+				{
+					question: newDoubtInput,
+					answer: '',
+				} as Doubt
+			])
+		}
+		setNewDoubtInput('');
+	}
+
+	function removeComment(rmComment:string){
+		setComments(state=>state.filter(cmt=>cmt!=rmComment))
+	}
+
+	function addComment(){
+		setComments(state=>[...state,newCommentInput]);
+		setNewCommentInput('');
+	}
+
+	function createNewProject(){
+		dispatch<any>({
+			task:name,
+			description,
+			subtask:subTask,
+			status:TaskStatus.unstarted,
+			comments,
+			doubt,
+			point,
+			project
+		} as Task);
+	}
+
+	return (
+		<animated.div style={sidebarStyle} className={`overflow-x-hidden`}>
 			<div className='h-full bg-gray-900 p-3'>
-				<div><AiOutlineClose color='white' size={25} className="ml-auto mr-0 cursor-pointer" onClick={onClose} /></div>
-				<div className='font-semibold text-lg'>Task Name</div>
-				<textarea className='multiline-input-field mb-3 w-full' />
-				<div className='font-semibold text-lg'>Description</div>
-				<textarea className='multiline-input-field mb-3 w-full' />
-				<div className='font-semibold text-lg'>Subtask</div>
-				<div className='flex flex-col items-start mb-3'>
-						<textarea className='multiline-input-field w-full' placeholder='Enter Subtask' />
-					<button className='bg-slate-400 text-slate-900 px-3 mt-2 rounded'>Add Subtask</button>
+				<div>
+					<AiOutlineClose color='white' size={25} className="ml-auto mr-0 cursor-pointer" onClick={onClose} />
 				</div>
-				<div className='font-semibold flex items-center mb-3 text-lg'>Point&nbsp;:&nbsp;<input className='input-field w-14' /></div>
+				<div className='font-semibold text-lg'>Task Name</div>
+				<textarea className='multiline-input-field mb-3 w-full'
+					onChange={(event) => { setName(event.target.value) }}
+				/>
+				<div className='font-semibold text-lg'>Description</div>
+				<textarea className='multiline-input-field mb-3 w-full' onChange={(event) => { setDescription(event.target.value) }} />
+				<div className='font-semibold text-lg'>Subtask</div>
+				<div>
+					{
+						subTask.map((tk, index) => {
+							return <InputTile key={index} inputValue={tk.task} onRemove={() => removeSubTask(tk)} />
+						})
+					}
+				</div>
+				<div className='flex flex-col items-start mb-3'>
+					<textarea className='multiline-input-field w-full' placeholder='Enter Subtask'
+						onChange={(event) => { setNewSubtaskInput(event.target.value) }}
+						value={newSubTaskInput}
+					/>
+					<button
+						className='bg-slate-800 px-3 py-1 mt-2 rounded'
+						onClick={addSubTask}
+					>
+						Add Subtask
+					</button>
+				</div>
+
 
 				<div className='font-semibold text-lg'>Doubt</div>
+				<div>
+					{
+						doubt.map((dbt, index) => {
+							return <QuestionTile
+								key={index}
+								question={dbt.question} 
+								answer={dbt.answer} 
+								bgColor={'bg-slate-700'} 
+								onRemove={()=>removeDoubt(dbt)}
+								/>
+
+						})
+					}
+				</div>
 				<div className='flex flex-col items-start mb-3'>
-						<textarea className='multiline-input-field w-full' placeholder='Enter Question' />
-					<button className='bg-slate-400 text-slate-900 px-3 mt-2 rounded'>Add Question</button>
+					<textarea className='multiline-input-field w-full'
+						placeholder='Enter Question'
+						onChange={(event) => setNewDoubtInput(event.target.value)}
+						value={newDoubtInput}
+					/>
+					<button className='bg-slate-800 px-3 py-1 mt-2 rounded' onClick={addDoubt}>
+						Add Question
+					</button>
 				</div>
 				<div className='font-semibold text-lg'>Comment</div>
-				<textarea className='multiline-input-field mb-3 w-full' />
-				<div><button className='btn-primary mr-3'>Save</button><button>cancel</button></div>
+				<div>
+					{
+						comments.map((cmt,index)=>{
+							return <InputTile key={index} inputValue={cmt} onRemove={()=>removeComment(cmt)}  />
+						})
+					}
+				</div>
+				<input className='input-field w-full mb-2' value={newCommentInput} onChange={(event) => setNewCommentInput(event.target.value)} />
+				<button className='bg-slate-800 px-3 py-1 mb-3 rounded' onClick={addComment}>
+					Add comment
+				</button>
+
+				<div className='font-semibold flex items-center mb-4 text-lg'>Point&nbsp;:&nbsp;
+					<input
+						className='input-field w-14'
+						onChange={(event) => setPoint(+event.target.value)}
+					/>
+				</div>
+
+				<div>
+					<button className='btn-primary mr-3'>Save</button>
+					<button>cancel</button>
+				</div>
 			</div>
-	</animated.div>
-  )
+		</animated.div>
+	)
+}
+
+
+
+function InputTile({ inputValue, onRemove }: { inputValue: string, onRemove: () => void }) {
+	return (
+		<div className={`py-2 px-2 bg-slate-800 my-1 rounded flex justify-between items-center`}>
+			{inputValue}
+			<AiOutlineClose className='cursor-pointer' onClick={onRemove} />
+		</div>
+	)
 }

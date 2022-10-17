@@ -11,4 +11,5 @@ export abstract class ApiConstants {
 
 	//task
 	static readonly getAllTask:string = '/task/all';
+	static readonly newTask:string = '/task/new';
 }

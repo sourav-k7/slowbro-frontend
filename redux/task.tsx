@@ -1,7 +1,7 @@
 import {  createSlice } from "@reduxjs/toolkit";
 import { Project } from "../model/project";
 import { Task } from "../model/task";
-import { createProject, getAllProject, getAllTask } from "./services/taskServices";
+import { createProject, createTask, getAllProject, getAllTask } from "./services/taskServices";
 
 
 export interface TaskStateType {
@@ -66,6 +66,17 @@ const taskSlice = createSlice({
 		.addCase(getAllTask.rejected,(state,action)=>{
 			state.loading = false;
 			state.error = action.error.message ?? "Something went wrong while fetching all tasks";
+		})
+		.addCase(createTask.pending,(state)=>{
+			state.loading = true;
+		})
+		.addCase(createTask.fulfilled,(state,action)=>{
+			state.loading = false;
+			state.tasks.push(action.payload);
+		})
+		.addCase(createTask.rejected,(state,action)=>{
+			state.loading = false;
+			state.error = action.error.message ?? "Something went wrong while creating new project";
 		})
 	}
 })

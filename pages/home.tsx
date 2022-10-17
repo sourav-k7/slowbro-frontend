@@ -25,7 +25,7 @@ export default function Home() {
 	const router = useRouter();
 	const [loading, setLoading] = useState(true);
 	const dispatch = useAppDispatch();
-	const [selectedTask, setSelectedTask] = useState<Task|undefined>();
+	const [selectedTask, setSelectedTask] = useState<Task|null>(null);
 	const [isSidebarOpen,setSidebarOpen] = useState(false);
 	const [dragId, setDragId] = useState();
 	const [isProjectModalVisible, setIsProjectModelVisible] = useState(false);

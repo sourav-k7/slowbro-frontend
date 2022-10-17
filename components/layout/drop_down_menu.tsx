@@ -3,9 +3,9 @@ import { FaChevronDown } from 'react-icons/fa';
 import { config, useTransition, animated } from 'react-spring';
 
 interface PropType {
-	selectedOption: String,
+	selectedOption: string,
 	Options: String[],
-	onOptionClick: () => void
+	onOptionClick: (a: number) => void
 }
 
 export default function DropDownMenu({ selectedOption, Options, onOptionClick }: PropType) {
@@ -38,7 +38,8 @@ export default function DropDownMenu({ selectedOption, Options, onOptionClick }:
 					>
 						{
 							Options.map((opt, index) => (
-								<div className='bg-slate-500 text-slate-900  py-1' key={index}>
+								<div className='bg-slate-500 text-slate-900  py-1' key={index} 
+									onClick={onOptionClick.bind(null, index)}>
 									{opt}
 								</div>
 

@@ -7,4 +7,8 @@ export abstract class ApiConstants {
 
 	//project
 	static readonly newProject:string =  '/project/new';
+	static readonly getAllProject:string = '/project/all';
+
+	//task
+	static readonly getAllTask:string = '/task/all';
 }

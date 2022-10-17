@@ -17,16 +17,15 @@ export default function Modal({ children, onClose, isVisible }: PropType) {
 
 
 	return (
-		<div className={`absolute z-10`}>
+		<div className={`absolute z-10 w-full h-full flex`}>
 			<div onClick={onClose}
-				className={`h-screen w-screen bg-black bg-opacity-50 flex items-center justify-center`} >
+				className={`absolute w-full h-full bg-black bg-opacity-50 `} />
+				<div className='relative m-auto'>
 				{modalTtransitions(
 					(prop, item) =>
 						item && (
 							<animated.div style={prop} className='bg-slate-700 p-3 rounded'>
-								<div>
 									{children}
-								</div>
 							</animated.div>
 						)
 				)}

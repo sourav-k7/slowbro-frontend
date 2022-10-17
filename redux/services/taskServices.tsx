@@ -8,5 +8,15 @@ interface CreateProjectType {
 
 export const createProject = createAsyncThunk('task/newProject',async({name}:CreateProjectType)=>{
 	const res =await axios.post(ApiConstants.newProject,{name});
-	return res.data.project;
+	return res.data.data;
+})
+
+export const getAllProject = createAsyncThunk('task/allProject',async()=>{
+	const res = await axios.get(ApiConstants.getAllProject);
+	return res.data.data;
+})
+
+export const getAllTask = createAsyncThunk('task/allTask',async()=>{
+	const res = await axios.get(ApiConstants.getAllTask);
+	return res.data.data;
 })

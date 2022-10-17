@@ -12,11 +12,12 @@ import { useAppDispatch } from '../hooks/redux_hooks';
 import { logout } from '../redux/user';
 import { BsPlus } from 'react-icons/bs';
 import Modal from '../components/layout/modal';
-import { createProject } from '../redux/services/taskServices';
+import { createProject, getAllProject, getAllTask } from '../redux/services/taskServices';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { TaskStateType } from '../redux/task';
 import { Project } from '../model/project';
+import { Task } from '../model/task';
 
 
 
@@ -24,13 +25,19 @@ export default function Home() {
 	const router = useRouter();
 	const [loading, setLoading] = useState(true);
 	const dispatch = useAppDispatch();
-	const [selectedTask, setSelectedTask] = useState(false);
+	const [selectedTask, setSelectedTask] = useState<Task|undefined>();
+	const [isSidebarOpen,setSidebarOpen] = useState(false);
 	const [dragId, setDragId] = useState();
 	const [isProjectModalVisible, setIsProjectModelVisible] = useState(false);
 	const [newProjectName, setNewProjectName] = useState('');
-	const taskState = useSelector<RootState ,TaskStateType>((state)=>state.task);
-	const [selectedProject,setSelectedProject] = useState<Project>();
+	const taskState = useSelector<RootState, TaskStateType>((state) => state.task);
+	const [selectedProject, setSelectedProject] = useState<Project>();
 
+	useEffect(() => {
+		console.log('in use Effect in home');
+		dispatch<any>(getAllProject());
+		dispatch<any>(getAllTask());
+	}, [])
 
 	useEffect(() => {
 		if (localStorage.getItem('slowbro-token') == null) {
@@ -41,11 +48,11 @@ export default function Home() {
 		}
 	}, [router])
 
-	useEffect(()=>{
-		if(taskState.projects.length>0){
+	useEffect(() => {
+		if (taskState.projects.length > 0 && selectedProject == null) {
 			setSelectedProject(taskState.projects[0]);
 		}
-	},[])
+	}, [taskState.projects])
 
 	const [boxes, setBoxes] = useState([
 		{
@@ -83,18 +90,19 @@ export default function Home() {
 	};
 
 
-	async function onlogout() {
+	async function onLogout() {
 		await dispatch<any>(logout());
 		localStorage.removeItem('slowbro-token');
 		router.replace('/');
 	}
 
-	function toggleProjectModalVisibility() {
+	function toggleNewProjectModalVisibility() {
 		setIsProjectModelVisible(state => !state);
 	}
 
 	function onCreateNewProject() {
 		dispatch<any>(createProject({ name: newProjectName }));
+		toggleNewProjectModalVisibility();
 	}
 
 	if (loading) {
@@ -103,20 +111,27 @@ export default function Home() {
 
 	return (
 		<div className='overflow-x-hidden min-h-screen flex scroll'>
+			<div className={`w-1/2 m-auto mt-3 relative `}>
 			<div className='absolute right-1 top-3'>
-				<button onClick={onlogout}>
+				<button onClick={onLogout}>
 					<FiLogOut size={30} />
 				</button>
 			</div>
-			<div className={`w-1/2 m-auto mt-3 `}>
 				<div className='flex  justify-center mb-7 gap-3 items-end'>
 					<Image src={bugImage} width='100' height={100} alt='bug.png' />
 					<div className=''>
 						<h1 className='text-6xl font-bold '>Tasks</h1>
 						<div className='flex items-center gap-1'>
-							<DropDownMenu selectedOption={selectedProject!.name} Options={taskState.projects.map(proj=>proj.name)} onOptionClick={() => { }} />
-							<button className='bg-slate-700 rounded' onClick={toggleProjectModalVisibility}>
-								<BsPlus size={30} />
+							{taskState.projects.length > 0 &&
+								<DropDownMenu
+									selectedOption={selectedProject?.name ?? ''}
+									Options={taskState.projects.map(proj => proj.name)}
+									onOptionClick={(index) => { setSelectedProject(taskState.projects[index]) }} />}
+							<button
+								className={`bg-slate-700 rounded ${taskState.projects.length == 0 ? 'w-full' : ''} flex 
+										items-center justify-center`}
+								onClick={toggleNewProjectModalVisibility}>
+								{taskState.projects.length == 0 && <span>Add Project</span>}	<BsPlus size={30} />
 							</button>
 						</div>
 					</div>
@@ -126,6 +141,16 @@ export default function Home() {
 						<TaskTitleTile handleDrag={handleDrag} handleDrop={handleDrop} title={ele.color} id={ele.id} key={index} />
 					)}
 				</ToggleTaskList>
+				<div className='flex justify-between items-center'>
+					<div className='font-bold text-lg'>Active Task</div>
+					<button className='btn-primary flex items-center' 
+					onClick={()=>{
+						setSelectedTask(null);
+						setSidebarOpen(true)
+						}}  >
+						Add new task &nbsp; <BsPlus size={20} />
+					</button>
+				</div>
 				<ActiveTile />
 				<ToggleTaskList title={'Todo'}>
 					{/* <TaskTitleTile index={1} title={'Task 1'} />
@@ -138,18 +163,18 @@ export default function Home() {
 					<TaskTitleTile index={3} title={'Task 1'} /> */}
 				</ToggleTaskList>
 			</div>
-			<Sidebar isSidebarOpen={selectedTask} />
+			<Sidebar isSidebarOpen={isSidebarOpen} onClose={()=>setSidebarOpen(false)} task={selectedTask} />
 
 			{isProjectModalVisible && <Modal
 				isVisible={isProjectModalVisible}
-				onClose={toggleProjectModalVisibility}
+				onClose={toggleNewProjectModalVisibility}
 			>
 				<div className='w-80'>
 					<div>Project name</div>
 					<input className='input-field mb-3 w-full' onChange={(event) => { setNewProjectName(event.target.value) }} />
 					<div>
 						<button className='btn-primary mr-3' onClick={onCreateNewProject}>Create</button>
-						<button onClick={toggleProjectModalVisibility}>cancel</button>
+						<button onClick={toggleNewProjectModalVisibility}>cancel</button>
 					</div>
 				</div>
 			</Modal>}

@@ -1,23 +1,26 @@
 import React, { useEffect, useState } from 'react'
-import { animated, useSpring } from 'react-spring'
+import { animated, update, useSpring } from 'react-spring'
 import { AiOutlineClose } from 'react-icons/ai';
 import { Task, Subtask, Doubt, TaskStatus } from '../../model/task';
 import QuestionTile from './question_tile';
 import { useAppDispatch } from '../../hooks/redux_hooks';
+import { Project } from '../../model/project';
+import { createTask, updateTask } from '../../redux/services/taskServices';
 
 interface PropTypes {
 	isSidebarOpen: boolean,
 	onClose: () => void,
 	task: Task | null,
+	project: Project | null,
 }
 
-export default function Sidebar({ isSidebarOpen, onClose, task }: PropTypes) {
+export default function Sidebar({ isSidebarOpen, onClose, task, project }: PropTypes) {
 	let sidebarWidth = 300;
 	const [name, setName] = useState('');
 	const [description, setDescription] = useState('');
 	const [subTask, setSubTask] = useState<Subtask[]>([]);
 	const [newSubTaskInput, setNewSubtaskInput] = useState('');
-	const [point, setPoint] = useState<number>();
+	const [point, setPoint] = useState<number>(0);
 	const [doubt, setDoubt] = useState<Doubt[]>([]);
 	const [newDoubtInput, setNewDoubtInput] = useState('');
 	const [comments, setComments] = useState<string[]>([]);
@@ -40,7 +43,10 @@ export default function Sidebar({ isSidebarOpen, onClose, task }: PropTypes) {
 			setSubTask(task.subtask);
 			setPoint(task.point);
 			setDoubt(task.doubt);
-			setComments(task.comment);
+			setComments(task.comments);
+		}
+		else {
+
 		}
 	}, [])
 
@@ -78,40 +84,69 @@ export default function Sidebar({ isSidebarOpen, onClose, task }: PropTypes) {
 		setNewDoubtInput('');
 	}
 
-	function removeComment(rmComment:string){
-		setComments(state=>state.filter(cmt=>cmt!=rmComment))
+	function removeComment(rmComment: string) {
+		setComments(state => state.filter(cmt => cmt != rmComment))
 	}
 
-	function addComment(){
-		setComments(state=>[...state,newCommentInput]);
+	function addComment() {
+		setComments(state => [...state, newCommentInput]);
 		setNewCommentInput('');
 	}
 
-	function createNewProject(){
-		dispatch<any>({
-			task:name,
+	function createNewTask() {
+		dispatch<any>(createTask({
+			task: name,
 			description,
-			subtask:subTask,
-			status:TaskStatus.unstarted,
+			subtask: subTask,
+			status: TaskStatus.unstarted,
 			comments,
 			doubt,
 			point,
-			project
-		} as Task);
+			project,
+		} as Task));
+		closeSideBar();
 	}
+
+	function onUpdateTask() {
+		dispatch<any>(updateTask({
+			_id: task?._id,
+			task: name,
+			description,
+			subtask: subTask,
+			status: TaskStatus.unstarted,
+			comments,
+			doubt,
+			point,
+			project,
+		} as Task));
+	}
+
+	function closeSideBar() {
+		setName('');
+		setDescription('');
+		setSubTask([]);
+		setPoint(0);
+		setDoubt([]);
+		setComments([]);
+		onClose();
+	}
+
 
 	return (
 		<animated.div style={sidebarStyle} className={`overflow-x-hidden`}>
 			<div className='h-full bg-gray-900 p-3'>
 				<div>
-					<AiOutlineClose color='white' size={25} className="ml-auto mr-0 cursor-pointer" onClick={onClose} />
+					<AiOutlineClose color='white' size={25} className="ml-auto mr-0 cursor-pointer" onClick={closeSideBar} />
 				</div>
 				<div className='font-semibold text-lg'>Task Name</div>
 				<textarea className='multiline-input-field mb-3 w-full'
 					onChange={(event) => { setName(event.target.value) }}
+					value={name}
 				/>
 				<div className='font-semibold text-lg'>Description</div>
-				<textarea className='multiline-input-field mb-3 w-full' onChange={(event) => { setDescription(event.target.value) }} />
+				<textarea className='multiline-input-field mb-3 w-full' onChange={(event) => { setDescription(event.target.value) }}
+					value={description}
+				/>
 				<div className='font-semibold text-lg'>Subtask</div>
 				<div>
 					{
@@ -140,11 +175,11 @@ export default function Sidebar({ isSidebarOpen, onClose, task }: PropTypes) {
 						doubt.map((dbt, index) => {
 							return <QuestionTile
 								key={index}
-								question={dbt.question} 
-								answer={dbt.answer} 
-								bgColor={'bg-slate-700'} 
-								onRemove={()=>removeDoubt(dbt)}
-								/>
+								question={dbt.question}
+								answer={dbt.answer}
+								bgColor={'bg-slate-700'}
+								onRemove={() => removeDoubt(dbt)}
+							/>
 
 						})
 					}
@@ -162,8 +197,8 @@ export default function Sidebar({ isSidebarOpen, onClose, task }: PropTypes) {
 				<div className='font-semibold text-lg'>Comment</div>
 				<div>
 					{
-						comments.map((cmt,index)=>{
-							return <InputTile key={index} inputValue={cmt} onRemove={()=>removeComment(cmt)}  />
+						comments.map((cmt, index) => {
+							return <InputTile key={index} inputValue={cmt} onRemove={() => removeComment(cmt)} />
 						})
 					}
 				</div>
@@ -180,7 +215,11 @@ export default function Sidebar({ isSidebarOpen, onClose, task }: PropTypes) {
 				</div>
 
 				<div>
-					<button className='btn-primary mr-3'>Save</button>
+					{
+						task == null
+							? <button className='btn-primary mr-3' onClick={createNewTask}>Create</button>
+							: <button className='btn-primary mr-3' onClick={onUpdateTask}>Save</button>
+					}
 					<button>cancel</button>
 				</div>
 			</div>

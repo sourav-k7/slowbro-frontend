@@ -31,7 +31,7 @@ export default function Home() {
 	const [isProjectModalVisible, setIsProjectModelVisible] = useState(false);
 	const [newProjectName, setNewProjectName] = useState('');
 	const taskState = useSelector<RootState, TaskStateType>((state) => state.task);
-	const [selectedProject, setSelectedProject] = useState<Project>();
+	const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
 	useEffect(() => {
 		console.log('in use Effect in home');
@@ -163,7 +163,8 @@ export default function Home() {
 					<TaskTitleTile index={3} title={'Task 1'} /> */}
 				</ToggleTaskList>
 			</div>
-			<Sidebar isSidebarOpen={isSidebarOpen} onClose={()=>setSidebarOpen(false)} task={selectedTask} />
+			<Sidebar isSidebarOpen={isSidebarOpen} onClose={()=>setSidebarOpen(false)} task={selectedTask} 
+					 project={selectedProject} />
 
 			{isProjectModalVisible && <Modal
 				isVisible={isProjectModalVisible}

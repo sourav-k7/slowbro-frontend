@@ -1,3 +1,5 @@
+import { Project } from "./project";
+
 export interface Task{
 	_id:string,
 	task:string,
@@ -9,7 +11,7 @@ export interface Task{
 	point:number,
 	doubt:Doubt[],
 	comments:string[],
-	project:string,
+	project:Project,
 }
 
 export interface Doubt{
@@ -23,7 +25,7 @@ export interface Subtask{
 }
 
 export enum TaskStatus{
-	unstarted='Unstarted',
-	started='Started',
-	completed='Completed'
+	unstarted='unstarted',
+	started='started',
+	completed='completed'
 }

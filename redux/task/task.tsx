@@ -1,37 +1,41 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { Project } from "../model/project";
-import { Task } from "../model/task";
-import { createProject, createTask, getAllPendingTask, getAllProject, updateTask } from "./services/taskServices";
-
-
-export interface TaskStateType {
-	tasks: Task[],
-	projects: Project[],
-	loading: Boolean,
-	error: String | null,
-}
+import { createProject, createTask, getAllPendingTask, getAllProject, updateTask } from "./taskServices";
+import { TaskStateType } from "./taskTypes";
 
 //! reset all new variable to logout reducer
 const initialState: TaskStateType = {
-	tasks: [],
+	selectedTask: null,
+	selectedProject:null,
+	isSidebarOpen:false,
+	todayCompleted: [],
+	previouslyCompletedTask: [],
+	pendingTasks: [],
 	projects: [],
 	loading: false,
 	error: null,
 }
 
-
-const taskSlice:any = createSlice({
+const taskSlice = createSlice({
 	name: 'task',
 	initialState,
 	reducers: {
-		addTask: (state: any, action: any) => {
-
+		selectTask: (state, action) => {
+			state.selectedTask = state.pendingTasks.find(tk=>tk._id==action.payload);
+			state.selectedTask = state.todayCompleted.find(tk=>tk._id==action.payload);
+			state.selectedTask = state.previouslyCompletedTask.find(tk=>tk._id==action.payload);
+			state.isSidebarOpen = true;
 		},
+		closeSidebar:(state)=>{
+			state.isSidebarOpen = false;
+		},
+		selectProject:(state,action)=>{
+			state.selectedProject = state.projects.find(proj=>proj._id == action.payload);
+		}
 	},
 	extraReducers: builder => {
 		builder
 			.addCase('user/logout', (state) => {
-				state.tasks = [];
+				state.pendingTasks = [];
 				state.projects = [];
 			})
 			.addCase(createProject.pending, (state) => {
@@ -51,6 +55,7 @@ const taskSlice:any = createSlice({
 			.addCase(getAllProject.fulfilled, (state, action) => {
 				state.loading = false;
 				state.projects = action.payload;
+				state.selectedProject = action.payload[0];
 			})
 			.addCase(getAllProject.rejected, (state, action) => {
 				state.loading = false;
@@ -61,18 +66,18 @@ const taskSlice:any = createSlice({
 			})
 			.addCase(getAllPendingTask.fulfilled, (state, action) => {
 				state.loading = false;
-				state.tasks = action.payload;
+				state.pendingTasks = action.payload;
 			})
 			.addCase(getAllPendingTask.rejected, (state, action) => {
 				state.loading = false;
-				state.error = action.error.message ?? "Something went wrong while fetching all tasks";
+				state.error = action.error.message ?? "Something went wrong while fetching all pendingTasks";
 			})
 			.addCase(createTask.pending, (state) => {
 				state.loading = true;
 			})
 			.addCase(createTask.fulfilled, (state, action) => {
 				state.loading = false;
-				state.tasks.push(action.payload);
+				state.pendingTasks.push(action.payload);
 			})
 			.addCase(createTask.rejected, (state, action) => {
 				state.loading = false;
@@ -83,7 +88,7 @@ const taskSlice:any = createSlice({
 			})
 			.addCase(updateTask.fulfilled, (state, action) => {
 				state.loading = false;
-				state.tasks = state.tasks.map(tk => {
+				state.pendingTasks = state.pendingTasks.map(tk => {
 					if (tk._id == action.payload._id) {
 						return action.payload;
 					}
@@ -98,5 +103,5 @@ const taskSlice:any = createSlice({
 })
 
 export default taskSlice.reducer;
-export const { addTask } = taskSlice.actions;
+export const { selectTask,selectProject,closeSidebar} = taskSlice.actions;
 

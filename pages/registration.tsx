@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import React,{useState} from 'react'
 import { useAppDispatch } from '../hooks/redux_hooks';
-import { registrationRequest } from '../redux/user';
+import { registrationRequest } from '../redux/user/user';
 
 export default function Registration() {
 	const [name,setName] =useState('');

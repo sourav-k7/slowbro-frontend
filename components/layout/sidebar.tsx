@@ -3,18 +3,16 @@ import { animated, update, useSpring } from 'react-spring'
 import { AiOutlineClose } from 'react-icons/ai';
 import { Task, Subtask, Doubt, TaskStatus } from '../../model/task';
 import QuestionTile from './question_tile';
-import { useAppDispatch } from '../../hooks/redux_hooks';
-import { Project } from '../../model/project';
-import { createTask, updateTask } from '../../redux/services/taskServices';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux_hooks';
+import { createTask, updateTask } from '../../redux/task/taskServices';
+import { closeSidebar } from '../../redux/task/task';
 
-interface PropTypes {
-	isSidebarOpen: boolean,
-	onClose: () => void,
-	task: Task | null,
-	project: Project | null,
-}
 
-export default function Sidebar({ isSidebarOpen, onClose, task, project }: PropTypes) {
+
+export default function Sidebar() {
+	const dispatch = useAppDispatch();
+	const isSidebarOpen = useAppSelector(state=>state.task.isSidebarOpen);
+	const task = useAppSelector(state=>state.task.selectedTask);
 	let sidebarWidth = 300;
 	const [name, setName] = useState('');
 	const [description, setDescription] = useState('');
@@ -25,8 +23,7 @@ export default function Sidebar({ isSidebarOpen, onClose, task, project }: PropT
 	const [newDoubtInput, setNewDoubtInput] = useState('');
 	const [comments, setComments] = useState<string[]>([]);
 	const [newCommentInput, setNewCommentInput] = useState('');
-	const dispatch = useAppDispatch();
-
+	const project = useAppSelector(state=>state.task.selectedProject);
 
 	if (typeof window !== 'undefined') {
 		sidebarWidth = (2 * window.innerWidth) / 5;
@@ -130,7 +127,7 @@ export default function Sidebar({ isSidebarOpen, onClose, task, project }: PropT
 		setPoint(0);
 		setDoubt([]);
 		setComments([]);
-		onClose();
+		dispatch(closeSidebar());
 	}
 
 
@@ -204,7 +201,7 @@ export default function Sidebar({ isSidebarOpen, onClose, task, project }: PropT
 						})
 					}
 				</div>
-				<input className='input-field w-full mb-2' value={newCommentInput} onChange={(event) => setNewCommentInput(event.target.value)} />
+				<input placeholder='Enter comment' className='input-field w-full mb-2' value={newCommentInput} onChange={(event) => setNewCommentInput(event.target.value)} />
 				<button className='bg-slate-800 px-3 py-1 mb-3 rounded' onClick={addComment}>
 					Add comment
 				</button>

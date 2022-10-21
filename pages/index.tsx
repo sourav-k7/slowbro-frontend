@@ -1,8 +1,8 @@
 import {useEffect, useState} from 'react';
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import { getProfile, loginRequest } from '../redux/user';
 import { useAppDispatch } from '../hooks/redux_hooks';
+import { getProfile, loginRequest } from '../redux/user/userServices';
 
 
 const Home: NextPage = () => {

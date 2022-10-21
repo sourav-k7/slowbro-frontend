@@ -1,4 +1,8 @@
 import React,{useState} from 'react'
+import { useAppDispatch } from '../hooks/redux_hooks';
+import { TaskStatus } from '../model/task';
+import { selectTask } from '../redux/task/task';
+import DropDownMenu from './layout/drop_down_menu';
 
 interface PropTypes {
 	title: string,
@@ -7,6 +11,7 @@ interface PropTypes {
 
 
 export default function TaskTitleTile({ title,  id }: PropTypes) {
+	const dispatch = useAppDispatch();
 	const [dragId, setDragId] = useState();
 	const handleDrag = (ev: any) => {
 		setDragId(ev.currentTarget.id);
@@ -24,18 +29,27 @@ export default function TaskTitleTile({ title,  id }: PropTypes) {
 		// const newBoxState = swapElements(boxes, dragBox, dropBox);
 		// setBoxes(newBoxState);
 	};
+
+	
 	
 	return (
 
 		<div
-			className={`bg-slate-800 p-3 my-1 rounded-md cursor-pointer `}
+			className={`bg-slate-800 p-3 my-1 rounded-md cursor-pointer flex justify-between items-center`}
 			draggable={true}
 			id={id}
 			onDragOver={(ev) => ev.preventDefault()}
 			onDragStart={handleDrag}
 			onDrop={handleDrop}
+			onClick={()=>dispatch(selectTask(id))}
 		>
-			{title}
+			<div>{title}</div>
+			<div className='w-32'>
+				<DropDownMenu
+						selectedOption={TaskStatus.unstarted}
+						Options={[TaskStatus.unstarted, TaskStatus.started, TaskStatus.completed]}
+						onOptionClick={() => { }} />
+			</div>
 		</div>
 
 	)

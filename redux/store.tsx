@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
-import taskReducer from './task';
+import taskReducer from './task/task';
 import thunkMiddleware from 'redux-thunk'
-import userReducer from './user';
+import userReducer from './user/user';
 
 
 

@@ -2,10 +2,9 @@ import { createAsyncThunk } from "@reduxjs/toolkit"
 import { Task } from "../../model/task";
 import { ApiConstants } from "../../utls/api_constant";
 import axios from '../../utls/axios'
+import { CreateProjectType } from "./taskTypes";
 
-interface CreateProjectType {
-	name: string,
-}
+
 
 export const createProject = createAsyncThunk('task/newProject', async ({ name }: CreateProjectType) => {
 	const res = await axios.post(ApiConstants.newProject, { name });

@@ -1,7 +1,5 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ApiConstants } from "../utls/api_constant";
-import axios from '../utls/axios';
-
+import { createSlice } from "@reduxjs/toolkit";
+import { getProfile, loginRequest, registrationRequest } from "./userServices";
 
 const initialState:{
 	name:string,
@@ -14,36 +12,6 @@ const initialState:{
 	loading:false,
 	error:null,
 }
-
- interface loginRequestPropType{
-	email:string,
-	password:string,
-}
-
- interface registractionRequestPropType {
-	name:string,
-	email:string,
-	password:string,
-}
-
-export const loginRequest = createAsyncThunk('user/login',async ({email,password}:loginRequestPropType,thunkApi)=>{
-	const res = await axios.post(ApiConstants.loginApi,{
-		email,password
-	});
-	return res.data;
-})
-
-export const registrationRequest = createAsyncThunk('user/registration',async ({name,email,password}:registractionRequestPropType)=>{
-	const res = await axios.post(ApiConstants.registractionApi,{
-		name,email,password
-	})
-	return res.data;
-})
-
-export const getProfile = createAsyncThunk('user/getProfile',async ()=>{
-	const res = await axios.get(ApiConstants.getProfileApi);
-	return res.data;
-})
 
 //! add all new variable to logout reducer
 const userSlice = createSlice({

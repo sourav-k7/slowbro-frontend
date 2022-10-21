@@ -1,12 +1,13 @@
 import React from 'react'
+import { useAppSelector } from '../hooks/redux_hooks'
 import ToggleTaskList from './layout/toggle_list'
+import TaskTitleTile from './task_title_tile';
 
 export default function TodoList() {
-  return (
-	<ToggleTaskList title={'Todo'}>
-					{/* <TaskTitleTile index={1} title={'Task 1'} />
-					<TaskTitleTile index={2} title={'Task 1'} />
-					<TaskTitleTile index={3} title={'Task 1'} /> */}
-				</ToggleTaskList>
-  )
+	const task = useAppSelector(state => state.task.pendingTasks);
+	return (
+		<ToggleTaskList title={'Todo'}>
+			{task.map(tk => <TaskTitleTile key={tk._id} id={tk._id} title={tk.task} />)}
+		</ToggleTaskList>
+	)
 }

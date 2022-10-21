@@ -8,17 +8,18 @@ import TaskTitleTile from '../components/task_title_tile';
 import DropDownMenu from '../components/layout/drop_down_menu';
 import { useRouter } from 'next/router';
 import { FiLogOut } from 'react-icons/fi';
-import { useAppDispatch } from '../hooks/redux_hooks';
-import { logout } from '../redux/user';
+import { useAppDispatch, useAppSelector } from '../hooks/redux_hooks';
+import { logout } from '../redux/user/user';
 import { BsPlus } from 'react-icons/bs';
 import Modal from '../components/layout/modal';
-import { createProject, getAllProject, getAllPendingTask } from '../redux/services/taskServices';
+import { createProject, getAllProject, getAllPendingTask } from '../redux/task/taskServices';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
-import { TaskStateType } from '../redux/task';
+import { TaskStateType } from '../redux/task/taskTypes';
 import { Project } from '../model/project';
 import { Task } from '../model/task';
 import TodoList from '../components/todo_list';
+import { selectProject, selectTask } from '../redux/task/task';
 
 
 
@@ -26,12 +27,11 @@ export default function Home() {
 	const router = useRouter();
 	const [loading, setLoading] = useState(true);
 	const dispatch = useAppDispatch();
-	const [selectedTask, setSelectedTask] = useState<Task|null>(null);
-	const [isSidebarOpen,setSidebarOpen] = useState(false);
+	const isSidebarOpen = useAppSelector(state=>state.task.isSidebarOpen);
 	const [isProjectModalVisible, setIsProjectModelVisible] = useState(false);
 	const [newProjectName, setNewProjectName] = useState('');
 	const taskState = useSelector<RootState, TaskStateType>((state) => state.task);
-	const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+	const selectedProject = useAppSelector((state)=>state.task.selectedProject);
 
 	useEffect(() => {
 		console.log('in use Effect in home');
@@ -48,11 +48,7 @@ export default function Home() {
 		}
 	}, [router])
 
-	useEffect(() => {
-		if (taskState.projects.length > 0 && selectedProject == null) {
-			setSelectedProject(taskState.projects[0]);
-		}
-	}, [taskState.projects])
+	
 
 
 
@@ -92,7 +88,7 @@ export default function Home() {
 								<DropDownMenu
 									selectedOption={selectedProject?.name ?? ''}
 									Options={taskState.projects.map(proj => proj.name)}
-									onOptionClick={(index) => { setSelectedProject(taskState.projects[index]) }} />}
+									onOptionClick={(index) => { dispatch(selectProject(taskState.projects[index]._id)) }} />}
 							<button
 								className={`bg-slate-700 rounded ${taskState.projects.length == 0 ? 'w-full' : ''} flex 
 										items-center justify-center`}
@@ -111,8 +107,7 @@ export default function Home() {
 					<div className='font-bold text-lg'>Active Task</div>
 					<button className='btn-primary flex items-center' 
 					onClick={()=>{
-						setSelectedTask(null);
-						setSidebarOpen(true)
+						dispatch(selectTask(null));
 						}}  >
 						Add new task &nbsp; <BsPlus size={20} />
 					</button>
@@ -125,8 +120,7 @@ export default function Home() {
 					<TaskTitleTile index={3} title={'Task 1'} /> */}
 				</ToggleTaskList>
 			</div>
-			<Sidebar isSidebarOpen={isSidebarOpen} onClose={()=>setSidebarOpen(false)} task={selectedTask} 
-					 project={selectedProject} />
+			<Sidebar />
 
 			{isProjectModalVisible && <Modal
 				isVisible={isProjectModalVisible}

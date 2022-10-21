@@ -12,6 +12,7 @@ export interface Task{
 	doubt:Doubt[],
 	comments:string[],
 	project:Project,
+	orderId:number,
 }
 
 export interface Doubt{

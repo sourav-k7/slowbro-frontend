@@ -47,7 +47,7 @@ async function onLogin() {
         <div className='text-body mb-1'>Email</div>
         <input className='input-field mb-3 w-full' onChange={(element)=>setEmail(element.target.value)} />
         <div className='text-body mb-1'>Password</div>
-        <input className='input-field mb-8 w-full' onChange={(element)=>setPassword(element.target.value)} />
+        <input className='input-field mb-8 w-full' type='password' onChange={(element)=>setPassword(element.target.value)} />
           <button className='btn-primary block mb-2 w-full' onClick={onLogin}>Login</button>
           <button className='text-body text-center w-full mb-5'>Forgot your password?</button>
         <div className='text-body text-center'>Don&apos;t have an account? <button className='text-seconday' onClick={()=>router.push('/registration')} >Sign up</button></div>

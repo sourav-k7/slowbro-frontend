@@ -17,8 +17,8 @@ export const getAllProject = createAsyncThunk('task/allProject', async () => {
 	return res.data.data;
 })
 
-export const getAllTask = createAsyncThunk('task/allTask', async () => {
-	const res = await axios.get(ApiConstants.getAllTask);
+export const getAllPendingTask = createAsyncThunk('task/allPendingTask', async () => {
+	const res = await axios.get(ApiConstants.getAllPendingTask);
 	return res.data.data;
 })
 
@@ -35,3 +35,4 @@ export const updateTask = createAsyncThunk('task/updateTask', async (task: Task)
 	});
 	return res.data.data;
 })
+

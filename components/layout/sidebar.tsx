@@ -103,6 +103,7 @@ export default function Sidebar({ isSidebarOpen, onClose, task, project }: PropT
 			doubt,
 			point,
 			project,
+			orderId:(new Date().getTime()),
 		} as Task));
 		closeSideBar();
 	}
@@ -119,6 +120,7 @@ export default function Sidebar({ isSidebarOpen, onClose, task, project }: PropT
 			point,
 			project,
 		} as Task));
+		closeSideBar();
 	}
 
 	function closeSideBar() {
@@ -210,6 +212,7 @@ export default function Sidebar({ isSidebarOpen, onClose, task, project }: PropT
 				<div className='font-semibold flex items-center mb-4 text-lg'>Point&nbsp;:&nbsp;
 					<input
 						className='input-field w-14'
+						value={point}
 						onChange={(event) => setPoint(+event.target.value)}
 					/>
 				</div>

@@ -12,12 +12,13 @@ import { useAppDispatch } from '../hooks/redux_hooks';
 import { logout } from '../redux/user';
 import { BsPlus } from 'react-icons/bs';
 import Modal from '../components/layout/modal';
-import { createProject, getAllProject, getAllTask } from '../redux/services/taskServices';
+import { createProject, getAllProject, getAllPendingTask } from '../redux/services/taskServices';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { TaskStateType } from '../redux/task';
 import { Project } from '../model/project';
 import { Task } from '../model/task';
+import TodoList from '../components/todo_list';
 
 
 
@@ -27,7 +28,6 @@ export default function Home() {
 	const dispatch = useAppDispatch();
 	const [selectedTask, setSelectedTask] = useState<Task|null>(null);
 	const [isSidebarOpen,setSidebarOpen] = useState(false);
-	const [dragId, setDragId] = useState();
 	const [isProjectModalVisible, setIsProjectModelVisible] = useState(false);
 	const [newProjectName, setNewProjectName] = useState('');
 	const taskState = useSelector<RootState, TaskStateType>((state) => state.task);
@@ -36,7 +36,7 @@ export default function Home() {
 	useEffect(() => {
 		console.log('in use Effect in home');
 		dispatch<any>(getAllProject());
-		dispatch<any>(getAllTask());
+		dispatch<any>(getAllPendingTask());
 	}, [])
 
 	useEffect(() => {
@@ -54,40 +54,6 @@ export default function Home() {
 		}
 	}, [taskState.projects])
 
-	const [boxes, setBoxes] = useState([
-		{
-			id: "Box-1",
-			color: "red",
-			order: 1
-		},
-		{
-			id: "Box-2",
-			color: "green",
-			order: 2
-		},
-		{
-			id: "Box-3",
-			color: "blue",
-			order: 3
-		}
-	]);
-
-	const handleDrag = (ev: any) => {
-		setDragId(ev.currentTarget.id);
-	};
-
-	function swapElements(arr: any, i1: number, i2: number) {
-		let tempArr = [...arr];
-		[tempArr[i1], tempArr[i2]] = [tempArr[i2], tempArr[i1]];
-		return tempArr;
-	}
-
-	const handleDrop = (ev: any) => {
-		const dragBox = boxes.findIndex((box) => box.id === dragId);
-		const dropBox = boxes.findIndex((box) => box.id === ev.currentTarget.id);
-		const newBoxState = swapElements(boxes, dragBox, dropBox);
-		setBoxes(newBoxState);
-	};
 
 
 	async function onLogout() {
@@ -137,9 +103,9 @@ export default function Home() {
 					</div>
 				</div>
 				<ToggleTaskList title={"Today's completed task"} >
-					{boxes.map((ele, index) =>
-						<TaskTitleTile handleDrag={handleDrag} handleDrop={handleDrop} title={ele.color} id={ele.id} key={index} />
-					)}
+					{/* {boxes.map((ele, index) =>
+						<TaskTitleTile  title={ele.color} id={ele.id} key={index} />
+					)} */}
 				</ToggleTaskList>
 				<div className='flex justify-between items-center'>
 					<div className='font-bold text-lg'>Active Task</div>
@@ -152,11 +118,7 @@ export default function Home() {
 					</button>
 				</div>
 				<ActiveTile />
-				<ToggleTaskList title={'Todo'}>
-					{/* <TaskTitleTile index={1} title={'Task 1'} />
-					<TaskTitleTile index={2} title={'Task 1'} />
-					<TaskTitleTile index={3} title={'Task 1'} /> */}
-				</ToggleTaskList>
+				<TodoList />
 				<ToggleTaskList title={'Previously completed task'}>
 					{/* <TaskTitleTile index={1} title={'Task 1'} />
 					<TaskTitleTile index={2} title={'Task 1'} />

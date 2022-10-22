@@ -7,16 +7,19 @@ import { useAppDispatch, useAppSelector } from '../../hooks/redux_hooks';
 import { createTask, updateTask } from '../../redux/task/taskServices';
 import { closeSidebar } from '../../redux/task/task';
 import SubtaskTile from '../sub_task_tile';
+import DropDownMenu from './drop_down_menu';
 
 
 
 export default function Sidebar() {
 	const dispatch = useAppDispatch();
-	const isSidebarOpen = useAppSelector(state => state.task.isSidebarOpen);
-	const task = useAppSelector(state => state.task.selectedTask);
+	const taskState = useAppSelector(state => state.task);
+	const isSidebarOpen = taskState.isSidebarOpen;
+	const task = taskState.selectedTask;
 	let sidebarWidth = 300;
 	const [name, setName] = useState('');
 	const [description, setDescription] = useState('');
+	const [status, setStatus] = useState<TaskStatus>(TaskStatus.unstarted);
 	const [subTask, setSubTask] = useState<Subtask[]>([]);
 	const [newSubTaskInput, setNewSubtaskInput] = useState('');
 	const [point, setPoint] = useState<number>(0);
@@ -24,7 +27,7 @@ export default function Sidebar() {
 	const [newDoubtInput, setNewDoubtInput] = useState('');
 	const [comments, setComments] = useState<string[]>([]);
 	const [newCommentInput, setNewCommentInput] = useState('');
-	const project = useAppSelector(state => state.task.selectedProject);
+	const project = taskState.selectedProject;
 
 	if (typeof window !== 'undefined') {
 		sidebarWidth = (2 * window.innerWidth) / 5;
@@ -35,11 +38,10 @@ export default function Sidebar() {
 	});
 
 	useEffect(() => {
-		console.log(task);
-		console.log(name);
 		if (task != null) {
 			setName(task.task);
 			setDescription(task.description);
+			setStatus(task.status);
 			setSubTask(task.subtask);
 			setPoint(task.point);
 			setDoubt(task.doubt);
@@ -59,6 +61,17 @@ export default function Sidebar() {
 		setSubTask(state => state.filter(tk => tk.task != rmTask.task))
 	}
 
+	function updateSubTask(updateTkId: string, status: TaskStatus) {
+		setSubTask(state => state.map(tk => {
+			if (tk._id == updateTkId) {
+				let tempSubTk = { ...tk };
+				tempSubTk.status = status;
+				return tempSubTk;
+			}
+			return tk;
+		}))
+	}
+
 	function addSubTask() {
 		console.log(task);
 		if (newSubTaskInput != '') {
@@ -75,6 +88,18 @@ export default function Sidebar() {
 
 	function removeDoubt(rmDomain: Doubt) {
 		setDoubt(state => state.filter(dbt => dbt.question != rmDomain.question))
+	}
+
+	function updateAnswer(questionId:string,answer:string){
+		setDoubt(state=>state.map(quest=>{
+			if(quest._id==questionId){
+				const tempQuestion = {...quest};
+				tempQuestion.answer = answer;
+				return tempQuestion;
+			}
+			return quest;
+		}))
+
 	}
 
 	function addDoubt() {
@@ -104,27 +129,27 @@ export default function Sidebar() {
 			task: name,
 			description,
 			subtask: subTask,
-			status: TaskStatus.unstarted,
+			status: status,
 			comments,
 			doubt,
 			point,
-			project,
+			project: project!._id,
 			orderId: (new Date().getTime()),
 		} as Task));
 		closeSideBar();
 	}
 
-	function onUpdateTask() {
+	function handleUpdateTask() {
 		dispatch<any>(updateTask({
 			_id: task?._id,
 			task: name,
 			description,
 			subtask: subTask,
-			status: TaskStatus.unstarted,
+			status: status,
 			comments,
 			doubt,
 			point,
-			project,
+			project: project!._id,
 		} as Task));
 		closeSideBar();
 	}
@@ -132,8 +157,7 @@ export default function Sidebar() {
 	function closeSideBar() {
 		dispatch(closeSidebar());
 	}
-
-
+	
 	return (
 		<animated.div style={sidebarStyle} className={`overflow-x-auto relative`}>
 			<div className='h-full fixed w-2/5 overflow-y-auto bg-gray-900 p-3 no-scrollbar'>
@@ -149,6 +173,11 @@ export default function Sidebar() {
 				<textarea className='multiline-input-field mb-3 w-full' onChange={(event) => { setDescription(event.target.value) }}
 					value={description}
 				/>
+				<div className='w-32 mb-3'>
+					<DropDownMenu selectedOption={status?.toString()}
+						Options={Object.values(TaskStatus).map(val => val)}
+						onOptionClick={(index) => { setStatus(Object.values(TaskStatus)[index]) }} />
+				</div>
 				<div className='font-semibold text-lg'>Subtask</div>
 				<div>
 					{
@@ -159,6 +188,7 @@ export default function Sidebar() {
 								status={tk.status}
 								onRemove={() => removeSubTask(tk)}
 								bgColor={'bg-slate-800'}
+								handleStatusUpdate={(status) => updateSubTask(tk._id, status)}
 							/>
 						)
 					}
@@ -186,7 +216,8 @@ export default function Sidebar() {
 								question={dbt.question}
 								answer={dbt.answer}
 								bgColor={'bg-slate-700'}
-								onRemove={() => removeDoubt(dbt)}
+								handleRemove={() => removeDoubt(dbt)}
+								handleAnswerUpdate={(answer)=>{updateAnswer(dbt._id,answer)}}
 							/>
 
 						})
@@ -227,7 +258,7 @@ export default function Sidebar() {
 					{
 						task == null
 							? <button className='btn-primary mr-3' onClick={createNewTask}>Create</button>
-							: <button className='btn-primary mr-3' onClick={onUpdateTask}>Save</button>
+							: <button className='btn-primary mr-3' onClick={handleUpdateTask}>Save</button>
 					}
 					<button>cancel</button>
 				</div>

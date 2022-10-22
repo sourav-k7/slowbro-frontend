@@ -11,16 +11,18 @@ export interface Task{
 	point:number,
 	doubt:Doubt[],
 	comments:string[],
-	project:Project,
+	project:string,
 	orderId:number,
 }
 
 export interface Doubt{
+	_id:string,
 	question:string,
 	answer?:string,
 }
 
 export interface Subtask{
+	_id:string,
 	task:string,
 	status:TaskStatus,
 }

@@ -8,9 +8,10 @@ interface PropType {
 	status: TaskStatus,
 	onRemove:()=>void,
 	bgColor:string,
+	handleStatusUpdate:(a:TaskStatus)=>void
 }
 
-export default function SubtaskTile({ title, status,onRemove,bgColor }: PropType) {
+export default function SubtaskTile({ title, status,onRemove,bgColor,handleStatusUpdate }: PropType) {
 	return (
 		<div className={`${
 			TaskStatus.unstarted==status?bgColor:
@@ -20,10 +21,10 @@ export default function SubtaskTile({ title, status,onRemove,bgColor }: PropType
 			<AiOutlineClose className='absolute -right-1 -top-1 bg-slate-400 text-slate-900 p-1 rounded-full cursor-pointer' 
 			size={15} onClick={onRemove} />
 			<div>{title}</div>
-			<div className='mr-3'>
+			<div className='mr-2'>
 				<DropDownMenu selectedOption={status.toString()} 
-					Options={[TaskStatus.unstarted, TaskStatus.started, TaskStatus.completed]}
-				 	onOptionClick={() => {}} />
+					Options={Object.values(TaskStatus).map(val => val)}
+				 	onOptionClick={(index) => {handleStatusUpdate(Object.values(TaskStatus)[index])}} />
 			</div>
 		</div>
 	)

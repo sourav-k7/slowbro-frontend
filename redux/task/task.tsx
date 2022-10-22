@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction, ThunkAction } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
+import { TaskStatus } from "../../model/task";
 import { createProject, createTask, getAllPendingTask, getAllProject, swapTask, updateTask } from "./taskServices";
 import { ListType, SelectTaskPayloadType, TaskStateType, TaskSwapType } from "./taskTypes";
 
@@ -50,6 +51,7 @@ const taskSlice = createSlice({
 			.addCase(createProject.fulfilled, (state, action) => {
 				state.loading = false;
 				state.projects.push(action.payload);
+				toast.success('Project created');
 			})
 			.addCase(createProject.rejected, (state, action) => {
 				state.loading = false;
@@ -84,6 +86,7 @@ const taskSlice = createSlice({
 			.addCase(createTask.fulfilled, (state, action) => {
 				state.loading = false;
 				state.pendingTasks.push(action.payload);
+				toast.success('Task created');
 			})
 			.addCase(createTask.rejected, (state, action) => {
 				state.loading = false;
@@ -100,6 +103,7 @@ const taskSlice = createSlice({
 					}
 					return tk;
 				})
+				toast.success('Task updated');
 			})
 			.addCase(updateTask.rejected, (state, action:any) => {
 				state.loading = false;

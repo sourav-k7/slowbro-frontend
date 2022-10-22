@@ -4,7 +4,6 @@ import Sidebar from '../components/layout/sidebar';
 import ToggleTaskList from '../components/layout/toggle_list'
 import ActiveTile from '../components/active_tile';
 import bugImage from '../public/bug.png'
-import TaskTitleTile from '../components/task_title_tile';
 import DropDownMenu from '../components/layout/drop_down_menu';
 import { useRouter } from 'next/router';
 import { FiLogOut } from 'react-icons/fi';
@@ -15,11 +14,10 @@ import Modal from '../components/layout/modal';
 import { createProject, getAllProject, getAllPendingTask } from '../redux/task/taskServices';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
-import { TaskStateType } from '../redux/task/taskTypes';
-import { Project } from '../model/project';
-import { Task } from '../model/task';
+import { ListType, TaskStateType } from '../redux/task/taskTypes';
 import TodoList from '../components/todo_list';
 import { selectProject, selectTask } from '../redux/task/task';
+import { toast } from 'react-toastify';
 
 
 
@@ -27,17 +25,17 @@ export default function Home() {
 	const router = useRouter();
 	const [loading, setLoading] = useState(true);
 	const dispatch = useAppDispatch();
-	const isSidebarOpen = useAppSelector(state=>state.task.isSidebarOpen);
 	const [isProjectModalVisible, setIsProjectModelVisible] = useState(false);
 	const [newProjectName, setNewProjectName] = useState('');
 	const taskState = useSelector<RootState, TaskStateType>((state) => state.task);
 	const selectedProject = useAppSelector((state)=>state.task.selectedProject);
+	let isSidebarOpen = useAppSelector((state)=>state.task.isSidebarOpen);
 
 	useEffect(() => {
 		console.log('in use Effect in home');
 		dispatch<any>(getAllProject());
 		dispatch<any>(getAllPendingTask());
-	}, [])
+	}, [dispatch])
 
 	useEffect(() => {
 		if (localStorage.getItem('slowbro-token') == null) {
@@ -72,7 +70,7 @@ export default function Home() {
 	}
 
 	return (
-		<div className='overflow-x-hidden min-h-screen flex scroll'>
+		<div  className='overflow-x-hidden min-h-screen flex scroll'>
 			<div className={`w-1/2 m-auto mt-3 relative `}>
 			<div className='absolute right-1 top-3'>
 				<button onClick={onLogout}>
@@ -107,7 +105,7 @@ export default function Home() {
 					<div className='font-bold text-lg'>Active Task</div>
 					<button className='btn-primary flex items-center' 
 					onClick={()=>{
-						dispatch(selectTask(null));
+						dispatch(selectTask({id:null,type:ListType.pending}));
 						}}  >
 						Add new task &nbsp; <BsPlus size={20} />
 					</button>

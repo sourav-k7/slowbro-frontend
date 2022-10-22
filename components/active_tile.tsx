@@ -25,9 +25,9 @@ export default function ActiveTile() {
 			{/* <div>Image</div> */}
 			<div className='font-semibold'>SubTask</div>
 			<div className='bg-slate-700 p-3 rounded mb-3'>
-				<SubtaskTile title={'Subtask'} status={TaskStatus.unstarted} />
-				<SubtaskTile title={'Subtask'} status={TaskStatus.started} />
-				<SubtaskTile title={'Subtask'} status={TaskStatus.completed} />
+				<SubtaskTile title={'Subtask'} status={TaskStatus.unstarted} onRemove={()=>{}} bgColor={'bg-slate-600'} />
+				<SubtaskTile title={'Subtask'} status={TaskStatus.started} onRemove={()=>{}} bgColor={'bg-slate-600'} />
+				<SubtaskTile title={'Subtask'} status={TaskStatus.completed} onRemove={()=>{}} bgColor={'bg-slate-600'} />
 			</div>
 			
 			<div className='font-semibold mb-3'>Points : 3 &#128293;</div>

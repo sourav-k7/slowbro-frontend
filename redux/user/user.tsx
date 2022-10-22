@@ -1,16 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 import { getProfile, loginRequest, registrationRequest } from "./userServices";
 
 const initialState:{
 	name:string,
 	email:string,
 	loading:Boolean,
-	error:string|null,
 } = {
 	name:'',
 	email:'',
 	loading:false,
-	error:null,
 }
 
 //! add all new variable to logout reducer
@@ -30,13 +29,12 @@ const userSlice = createSlice({
 		})
 		.addCase(loginRequest.fulfilled,(state,action)=>{
 			state.loading = false;
-			state.error = null;
 			state.email = action.payload.email;
 			state.name = action.payload.name;
 		localStorage.setItem('slowbro-token',action.payload.token);
 		})
 		.addCase(loginRequest.rejected,(state,action)=>{
-			state.error = action.error.message??"Something went wrong while sign in";
+			toast.error(action.error.message??"Something went wrong while sign in");
 			state.loading = false;
 		})
 		.addCase(registrationRequest.pending,(state)=>{
@@ -44,14 +42,14 @@ const userSlice = createSlice({
 		})
 		.addCase(registrationRequest.fulfilled,(state,action)=>{
 			state.loading = false;
-			state.error = null;
+		
 			state.email = action.payload.email;
 			state.name = action.payload.name;
 			localStorage.setItem('slowbro-token',action.payload.token);
 		})
 		.addCase(registrationRequest.rejected,(state,action)=>{
 			state.loading = false;
-			state.error = action.error.message??"Something went wrong while sign up";
+			toast.error(action.error.message??"Something went wrong while sign up");
 		})
 		.addCase(getProfile.pending,(state)=>{
 			state.loading = true;
@@ -63,7 +61,7 @@ const userSlice = createSlice({
 		})
 		.addCase(getProfile.rejected,(state,action)=>{
 			state.loading = false;
-			state.error = action.error.message??'Something went wrong while fetching profile';
+			toast.error(action.error.message??'Something went wrong while fetching profile');
 		})
 
 	}

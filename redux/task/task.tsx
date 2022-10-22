@@ -1,6 +1,7 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { createProject, createTask, getAllPendingTask, getAllProject, updateTask } from "./taskServices";
-import { TaskStateType } from "./taskTypes";
+import { createSlice, PayloadAction, ThunkAction } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
+import { createProject, createTask, getAllPendingTask, getAllProject, swapTask, updateTask } from "./taskServices";
+import { ListType, SelectTaskPayloadType, TaskStateType, TaskSwapType } from "./taskTypes";
 
 //! reset all new variable to logout reducer
 const initialState: TaskStateType = {
@@ -11,18 +12,23 @@ const initialState: TaskStateType = {
 	previouslyCompletedTask: [],
 	pendingTasks: [],
 	projects: [],
-	loading: false,
-	error: null,
+	loading: false
 }
 
 const taskSlice = createSlice({
 	name: 'task',
 	initialState,
 	reducers: {
-		selectTask: (state, action) => {
-			state.selectedTask = state.pendingTasks.find(tk=>tk._id==action.payload);
-			state.selectedTask = state.todayCompleted.find(tk=>tk._id==action.payload);
-			state.selectedTask = state.previouslyCompletedTask.find(tk=>tk._id==action.payload);
+		selectTask: (state, action:PayloadAction<SelectTaskPayloadType>) => {
+			if(action.payload.type==ListType.pending){
+				state.selectedTask = state.pendingTasks.find(tk=>tk._id==action.payload.id);
+			}
+			else if(action.payload.type==ListType.today){
+				state.selectedTask =  state.todayCompleted.find(tk=>tk._id==action.payload.id);
+			}
+			else if(action.payload.type == ListType.previous){
+				state.selectedTask =  state.previouslyCompletedTask.find(tk=>tk._id==action.payload.type);
+			}
 			state.isSidebarOpen = true;
 		},
 		closeSidebar:(state)=>{
@@ -47,7 +53,7 @@ const taskSlice = createSlice({
 			})
 			.addCase(createProject.rejected, (state, action) => {
 				state.loading = false;
-				state.error = action.error.message ?? "Something went wrong while creating project";
+			toast.error(action.error.message ?? "Something went wrong while creating project");
 			})
 			.addCase(getAllProject.pending, (state) => {
 				state.loading = true;
@@ -59,7 +65,7 @@ const taskSlice = createSlice({
 			})
 			.addCase(getAllProject.rejected, (state, action) => {
 				state.loading = false;
-				state.error = action.error.message ?? "Something went wrong while fetching all projects";
+				toast.error(action.error.message ?? "Something went wrong while fetching all projects");
 			})
 			.addCase(getAllPendingTask.pending, (state) => {
 				state.loading = true;
@@ -70,7 +76,7 @@ const taskSlice = createSlice({
 			})
 			.addCase(getAllPendingTask.rejected, (state, action) => {
 				state.loading = false;
-				state.error = action.error.message ?? "Something went wrong while fetching all pendingTasks";
+				toast.error(action.error.message ?? "Something went wrong while fetching all pendingTasks");
 			})
 			.addCase(createTask.pending, (state) => {
 				state.loading = true;
@@ -81,7 +87,7 @@ const taskSlice = createSlice({
 			})
 			.addCase(createTask.rejected, (state, action) => {
 				state.loading = false;
-				state.error = action.error.message ?? "Something went wrong while creating new project";
+				toast.error(action.error.message ?? "Something went wrong while creating new project");
 			})
 			.addCase(updateTask.pending, (state) => {
 				state.loading = true;
@@ -95,13 +101,27 @@ const taskSlice = createSlice({
 					return tk;
 				})
 			})
-			.addCase(updateTask.rejected, (state, action) => {
+			.addCase(updateTask.rejected, (state, action:any) => {
 				state.loading = false;
-				state.error = action.error.message ?? "Something went wrong while updating new project";
+				toast.error(action.error.message ?? "Something went wrong while updating new project");
+			})
+			.addCase(swapTask.pending,(state,{meta})=>{
+				const drapIndex = meta.arg.dragTaskIndex;
+				const dropIndex = meta.arg.dropTaskIndex;
+				const type = meta.arg.type;
+				if(type==ListType.pending){
+					[state.pendingTasks[drapIndex], state.pendingTasks[dropIndex]] = [state.pendingTasks[dropIndex], state.pendingTasks[drapIndex]];
+				}
+				else if(type ==ListType.today){
+					[state.todayCompleted[drapIndex], state.todayCompleted[dropIndex]] = [state.todayCompleted[dropIndex], state.todayCompleted[drapIndex]];
+				}
+				else{
+					[state.previouslyCompletedTask[drapIndex], state.previouslyCompletedTask[dropIndex]] = [state.previouslyCompletedTask[dropIndex], state.previouslyCompletedTask[drapIndex]];
+				}
+		
 			})
 	}
 })
 
 export default taskSlice.reducer;
 export const { selectTask,selectProject,closeSidebar} = taskSlice.actions;
-

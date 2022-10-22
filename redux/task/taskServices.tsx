@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit"
 import { Task } from "../../model/task";
 import { ApiConstants } from "../../utls/api_constant";
 import axios from '../../utls/axios'
-import { CreateProjectType } from "./taskTypes";
+import { CreateProjectType, ListType, TaskStateType, TaskSwapType } from "./taskTypes";
 
 
 
@@ -35,3 +35,27 @@ export const updateTask = createAsyncThunk('task/updateTask', async (task: Task)
 	return res.data.data;
 })
 
+export const swapTask = createAsyncThunk('task/swap', async ({ dropTaskIndex, dragTaskIndex, type }: TaskSwapType, thunkApi) => {
+	let swapList: Task[] = [];
+	const state = thunkApi.getState() as { task: TaskStateType, user: any };
+	const task = state.task;
+	if (type == ListType.pending) {
+		swapList = task.pendingTasks;
+	}
+	else if (type == ListType.today) {
+		swapList = task.todayCompleted;
+	}
+	else {
+		swapList = task.previouslyCompletedTask;
+	}
+	let dragTaskId = swapList[dragTaskIndex]._id;
+	let dragTaskOrderId = swapList[dragTaskIndex].orderId;
+	let dropTaskId = swapList[dropTaskIndex]._id;
+	let dropTaskOrderId = swapList[dropTaskIndex].orderId;
+	const res = await axios.post(ApiConstants.swapTask, {
+		dragTaskId,
+		dragTaskOrderId,
+		dropTaskId,
+		dropTaskOrderId
+	})
+})

@@ -6,13 +6,14 @@ import QuestionTile from './question_tile';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux_hooks';
 import { createTask, updateTask } from '../../redux/task/taskServices';
 import { closeSidebar } from '../../redux/task/task';
+import SubtaskTile from '../sub_task_tile';
 
 
 
 export default function Sidebar() {
 	const dispatch = useAppDispatch();
-	const isSidebarOpen = useAppSelector(state=>state.task.isSidebarOpen);
-	const task = useAppSelector(state=>state.task.selectedTask);
+	const isSidebarOpen = useAppSelector(state => state.task.isSidebarOpen);
+	const task = useAppSelector(state => state.task.selectedTask);
 	let sidebarWidth = 300;
 	const [name, setName] = useState('');
 	const [description, setDescription] = useState('');
@@ -23,7 +24,7 @@ export default function Sidebar() {
 	const [newDoubtInput, setNewDoubtInput] = useState('');
 	const [comments, setComments] = useState<string[]>([]);
 	const [newCommentInput, setNewCommentInput] = useState('');
-	const project = useAppSelector(state=>state.task.selectedProject);
+	const project = useAppSelector(state => state.task.selectedProject);
 
 	if (typeof window !== 'undefined') {
 		sidebarWidth = (2 * window.innerWidth) / 5;
@@ -34,6 +35,8 @@ export default function Sidebar() {
 	});
 
 	useEffect(() => {
+		console.log(task);
+		console.log(name);
 		if (task != null) {
 			setName(task.task);
 			setDescription(task.description);
@@ -41,17 +44,23 @@ export default function Sidebar() {
 			setPoint(task.point);
 			setDoubt(task.doubt);
 			setComments(task.comments);
+		} else {
+			setName('');
+			setDescription('');
+			setSubTask([]);
+			setPoint(0);
+			setDoubt([]);
+			setComments([]);
 		}
-		else {
 
-		}
-	}, [])
+	}, [isSidebarOpen, task])
 
 	function removeSubTask(rmTask: Subtask) {
 		setSubTask(state => state.filter(tk => tk.task != rmTask.task))
 	}
 
 	function addSubTask() {
+		console.log(task);
 		if (newSubTaskInput != '') {
 			setSubTask(state => [
 				...state,
@@ -100,7 +109,7 @@ export default function Sidebar() {
 			doubt,
 			point,
 			project,
-			orderId:(new Date().getTime()),
+			orderId: (new Date().getTime()),
 		} as Task));
 		closeSideBar();
 	}
@@ -121,19 +130,13 @@ export default function Sidebar() {
 	}
 
 	function closeSideBar() {
-		setName('');
-		setDescription('');
-		setSubTask([]);
-		setPoint(0);
-		setDoubt([]);
-		setComments([]);
 		dispatch(closeSidebar());
 	}
 
 
 	return (
-		<animated.div style={sidebarStyle} className={`overflow-x-hidden`}>
-			<div className='h-full bg-gray-900 p-3'>
+		<animated.div style={sidebarStyle} className={`overflow-x-auto relative`}>
+			<div className='h-full fixed w-2/5 overflow-y-auto bg-gray-900 p-3 no-scrollbar'>
 				<div>
 					<AiOutlineClose color='white' size={25} className="ml-auto mr-0 cursor-pointer" onClick={closeSideBar} />
 				</div>
@@ -149,9 +152,15 @@ export default function Sidebar() {
 				<div className='font-semibold text-lg'>Subtask</div>
 				<div>
 					{
-						subTask.map((tk, index) => {
-							return <InputTile key={index} inputValue={tk.task} onRemove={() => removeSubTask(tk)} />
-						})
+						subTask.map((tk, index) =>
+							<SubtaskTile
+								key={index}
+								title={tk.task}
+								status={tk.status}
+								onRemove={() => removeSubTask(tk)}
+								bgColor={'bg-slate-800'}
+							/>
+						)
 					}
 				</div>
 				<div className='flex flex-col items-start mb-3'>

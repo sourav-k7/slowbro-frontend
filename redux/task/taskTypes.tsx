@@ -8,7 +8,6 @@ export interface TaskStateType {
 	pendingTasks: Task[],
 	projects: Project[],
 	loading: Boolean,
-	error: String | null,
 	selectedTask: Task | null | undefined,
 	selectedProject:Project|null|undefined,
 }
@@ -17,4 +16,19 @@ export interface CreateProjectType {
 	name: string,
 }
 
+export interface SelectTaskPayloadType{
+	id:string | null,
+	type:ListType
+}
 
+export interface TaskSwapType{
+	dragTaskIndex:number,
+	dropTaskIndex:number,
+	type:ListType
+}
+
+export enum ListType {
+	pending = 'pending',
+	today = 'today',
+	previous = 'previos'
+}

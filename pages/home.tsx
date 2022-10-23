@@ -12,12 +12,11 @@ import { logout } from '../redux/user/user';
 import { BsPlus } from 'react-icons/bs';
 import Modal from '../components/layout/modal';
 import { createProject, getAllProject, getAllPendingTask } from '../redux/task/taskServices';
-import { useSelector } from 'react-redux';
-import { RootState } from '../redux/store';
-import { ListType, TaskStateType } from '../redux/task/taskTypes';
+import { ListType } from '../redux/task/taskTypes';
 import TodoList from '../components/todo_list';
 import { selectProject, selectTask } from '../redux/task/task';
-import { toast } from 'react-toastify';
+import { TaskStatus } from '../model/task';
+import TodayCompletedTaskList from '../components/today_completed_task_list';
 
 
 
@@ -27,9 +26,10 @@ export default function Home() {
 	const dispatch = useAppDispatch();
 	const [isProjectModalVisible, setIsProjectModelVisible] = useState(false);
 	const [newProjectName, setNewProjectName] = useState('');
-	const taskState = useSelector<RootState, TaskStateType>((state) => state.task);
-	const selectedProject = useAppSelector((state)=>state.task.selectedProject);
-	let isSidebarOpen = useAppSelector((state)=>state.task.isSidebarOpen);
+	const taskState = useAppSelector(state=>state.task);
+	const selectedProject = taskState.selectedProject;
+	const pendingTask = taskState.pendingTasks;
+	let activeTask = pendingTask.filter(tk=>tk.project==selectedProject?._id && tk.status == TaskStatus.started);
 
 	useEffect(() => {
 		console.log('in use Effect in home');
@@ -96,12 +96,8 @@ export default function Home() {
 						</div>
 					</div>
 				</div>
-				<ToggleTaskList title={"Today's completed task"} >
-					{/* {boxes.map((ele, index) =>
-						<TaskTitleTile  title={ele.color} id={ele.id} key={index} />
-					)} */}
-				</ToggleTaskList>
-				<div className='flex justify-between items-center'>
+				<TodayCompletedTaskList />
+				<div className='flex justify-between items-center mb-2'>
 					<div className='font-bold text-lg'>Active Task</div>
 					<button className='btn-primary flex items-center' 
 					onClick={()=>{
@@ -110,7 +106,13 @@ export default function Home() {
 						Add new task &nbsp; <BsPlus size={20} />
 					</button>
 				</div>
-				<ActiveTile />
+				{
+					activeTask.length==0?
+					<div className='bg-slate-800 p-3 rounded'>
+						No Active Task
+					</div>
+:					activeTask.map(tk=><ActiveTile key={tk._id} task={tk} />)
+				}
 				<TodoList />
 				<ToggleTaskList title={'Previously completed task'}>
 					{/* <TaskTitleTile index={1} title={'Task 1'} />

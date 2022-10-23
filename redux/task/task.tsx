@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, ThunkAction } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import { TaskStatus } from "../../model/task";
-import { createProject, createTask, getAllPendingTask, getAllProject, swapTask, updateTask } from "./taskServices";
+import { completeTask, createProject, createTask, getAllPendingTask, getAllProject, getAllTodayCompletedTask, swapTask, updateTask } from "./taskServices";
 import { ListType, SelectTaskPayloadType, TaskStateType, TaskSwapType } from "./taskTypes";
 
 //! reset all new variable to logout reducer
@@ -123,6 +123,29 @@ const taskSlice = createSlice({
 					[state.previouslyCompletedTask[drapIndex], state.previouslyCompletedTask[dropIndex]] = [state.previouslyCompletedTask[dropIndex], state.previouslyCompletedTask[drapIndex]];
 				}
 		
+			})
+			.addCase(getAllTodayCompletedTask.pending,(state)=>{
+				state.loading = true;
+			})
+			.addCase(getAllTodayCompletedTask.fulfilled,(state,action)=>{
+				state.loading = false;
+				state.todayCompleted = action.payload;
+			})
+			.addCase(getAllTodayCompletedTask.rejected,(state,action)=>{
+				state.loading=false;
+				toast.error(action.error.message ?? "Something went wrong while fetching all today completed task.")
+			})
+			.addCase(completeTask.pending,(state)=>{
+				state.loading = true;
+			})
+			.addCase(completeTask.fulfilled,(state,action)=>{
+				state.loading = false;
+				state.todayCompleted.push(action.payload);
+				state.pendingTasks = state.pendingTasks.filter(tk=>tk._id !=action.payload._id);
+			})
+			.addCase(completeTask.rejected,(state,action)=>{
+				state.loading=false;
+				toast.error(action.error.message??'Something went wrong');
 			})
 	}
 })

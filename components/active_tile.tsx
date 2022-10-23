@@ -1,44 +1,171 @@
 import Head from 'next/head';
-import React from 'react'
-import { TaskStatus } from '../model/task';
+import React, { useEffect, useRef, useState } from 'react'
+import { AiOutlineClose } from 'react-icons/ai';
+import { useAppDispatch, useAppSelector } from '../hooks/redux_hooks';
+import { Doubt, Subtask, Task, TaskStatus } from '../model/task';
+import { updateTask } from '../redux/task/taskServices';
 import DropDownMenu from './layout/drop_down_menu';
 import QuestionTile from './layout/question_tile';
 import SubtaskTile from './sub_task_tile';
 
-export default function ActiveTile() {
+interface PropType {
+	task: Task,
+}
+
+export default function ActiveTile({ task }: PropType) {
+	const taskState = useAppSelector(state => state.task);
+	const selectedProject = taskState.selectedProject;
+	const dispatch = useAppDispatch();
+	const [status, setStatus] = useState(task.status);
+	const [subTask, setSubTask] = useState<Subtask[]>(task.subtask);
+	const [doubt, setDoubt] = useState<Doubt[]>(task.doubt);
+
+	useEffect(() => {
+		setStatus(task.status);
+		setSubTask(task.subtask);
+		setDoubt(task.doubt);
+	}, [task])
+
+
+
+
+	function handleUpdateTask(field: string, value: any) {
+
+		dispatch<any>(updateTask({
+			...task,
+			status: status,
+			subtask: subTask,
+			doubt: doubt,
+			[field]: value
+		} as Task));
+	}
+
+	function removeSubTask(rmTask: Subtask) {
+		let latestSubtask: Subtask[] = [];
+		setSubTask(state => {
+			latestSubtask = state.filter(tk => tk.task != rmTask.task)
+			return latestSubtask;
+		})
+		handleUpdateTask('subtask', latestSubtask);
+	}
+
+	function updateSubTask(updateTkId: string, updatedStatus: TaskStatus) {
+		let latestSubtask: Subtask[] = [];
+		setSubTask(state => {
+			latestSubtask = state.map(tk => {
+				if (tk._id == updateTkId) {
+					let tempSubTk = { ...tk };
+					tempSubTk.status = updatedStatus;
+					return tempSubTk;
+				}
+				return tk;
+			})
+			return latestSubtask;
+		})
+		handleUpdateTask('subtask', latestSubtask);
+	}
+
+	function updateStatus(index: number) {
+		const newStatus = Object.values(TaskStatus)[index];
+		setStatus(newStatus);
+		handleUpdateTask('status', newStatus);
+	}
+
+	function removeDoubt(rmDomain: Doubt) {
+		let latestState: Doubt[] = [];
+		setDoubt(state => {
+			latestState = state.filter(dbt => dbt._id != rmDomain._id)
+			return latestState;
+		})
+		handleUpdateTask('doubt', latestState);
+	}
+
+	function updateAnswer(questionId: string, answer: string) {
+		let latestState: Doubt[] = [];
+		setDoubt(state => {
+
+			latestState = state.map(quest => {
+				if (quest._id == questionId) {
+					const tempQuestion = { ...quest };
+					tempQuestion.answer = answer;
+					return tempQuestion;
+				}
+				return quest;
+			})
+			return latestState;
+		})
+		handleUpdateTask('doubt', latestState);
+	}
+
+
 	return (
 		<div className='my-3 p-3 bg-slate-800 rounded-md'>
 			<Head>
-			<meta charSet="UTF-8" />
+				<meta charSet="UTF-8" />
 			</Head>
 
-			<div className='text-xl font-semibold'>Task Name</div>
-			<div className='text-gray-400 mb-3'>Project</div>
+			<div className='text-xl font-semibold'>{task.task}</div>
+			<div className='text-gray-400 mb-3'>{selectedProject?.name}</div>
 			<div className='mb-3 w-32'>
 				<DropDownMenu
-					selectedOption={TaskStatus.unstarted}
-					Options={[TaskStatus.unstarted, TaskStatus.started, TaskStatus.completed]}
-					onOptionClick={() => { }} />
+					selectedOption={task.status}
+					Options={Object.values(TaskStatus).map(val => val)}
+					onOptionClick={updateStatus} />
 			</div>
 			<div className='font-semibold '>Description</div>
-			<div className='bg-slate-700 mb-3 p-3 rounded'>this is a test description</div>
+			<div className='bg-slate-700 mb-3 p-3 rounded'>{task.description}</div>
 			{/* <div>Image</div> */}
 			<div className='font-semibold'>SubTask</div>
 			<div className='bg-slate-700 p-3 rounded mb-3'>
-				{/* <SubtaskTile title={'Subtask'} status={TaskStatus.unstarted} onRemove={()=>{}} bgColor={'bg-slate-600'} />
-				<SubtaskTile title={'Subtask'} status={TaskStatus.started} onRemove={()=>{}} bgColor={'bg-slate-600'} />
-				<SubtaskTile title={'Subtask'} status={TaskStatus.completed} onRemove={()=>{}} bgColor={'bg-slate-600'} /> */}
+				{subTask.length == 0 ?
+					"No subtask"
+					: subTask.map(stk => {
+						return <SubtaskTile
+							key={stk._id}
+							title={stk.task}
+							status={stk.status}
+							bgColor={'bg-slate-600'}
+							handleStatusUpdate={(status) => updateSubTask(stk._id, status)}
+							onRemove={() => removeSubTask(stk)}
+						/>
+					})
+				}
 			</div>
-			
-			<div className='font-semibold mb-3'>Points : 3 &#128293;</div>
+
+			<div className='font-semibold mb-3'>Points : {task.point} &#128293;</div>
 			<div className='font-semibold'>Doubt</div>
 			<div className='bg-slate-700 mb-3 p-3 rounded'>
+				{
+					task.doubt.length == 0 ?
+						"No doubt" :
+						task.doubt.map(dbt => {
+							return <QuestionTile
+								key={dbt._id}
+								question={dbt.question}
+								answer={dbt.answer}
+								handleRemove={() => removeDoubt(dbt)}
+								handleAnswerUpdate={(answer) => updateAnswer(dbt._id, answer)}
+								bgColor={'bg-slate-600'}
+							/>
+						})
 
-				{/* <QuestionTile question={'what to do in this task?'} answer={'some temp answer'} bgColor={'bg-slate-600'} /> */}
+				}
 			</div>
 			<div className='font-semibold'>Comments</div>
 			<div className=" bg-slate-700 mb-1 p-3 rounded">
-				some random comment 
+				{
+					task.comments.length == 0 ?
+						"No comments" :
+						task.comments.map((comment, index) => {
+							return (
+								<div key={index} className={`py-2 px-2 bg-slate-800 my-1 rounded flex justify-between items-center`}>
+									{comment}
+									<AiOutlineClose className='cursor-pointer' onClick={() => { }} />
+								</div>
+
+							)
+						})
+				}
 			</div>
 		</div>
 	)

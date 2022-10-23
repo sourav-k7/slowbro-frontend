@@ -7,13 +7,14 @@ interface PropTypes {
 	handleClick:()=>void,
 	handleDrag:()=>void,
 	handleDrop:()=>void,
+	bgColor?:string,
 }
 
-export default function TaskTitleTile({ title, id, point,handleClick,handleDrag,handleDrop }: PropTypes) {
+export default function TaskTitleTile({ title, id, point,handleClick,handleDrag,handleDrop,bgColor='bg-slate-800' }: PropTypes) {
 	return (
 
 		<div
-			className={`bg-slate-800 p-3 my-1 rounded-md cursor-pointer flex justify-between items-center `}
+			className={`${bgColor} p-3 my-1 rounded-md cursor-pointer flex justify-between items-center `}
 			draggable={true}
 			id={id}
 			onDragOver={(ev) => ev.preventDefault()}

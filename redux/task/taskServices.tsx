@@ -21,7 +21,10 @@ export const getAllPendingTask = createAsyncThunk('task/allPendingTask', async (
 	return res.data.data;
 })
 
-
+export const getAllTodayCompletedTask = createAsyncThunk('task/allTodayCompletedTask',async ()=>{
+	const res = await axios.get(ApiConstants.getAllTodayCompletedTask);
+	return res.data.data;
+})
 
 export const createTask = createAsyncThunk('task/newTask', async (task: Task) => {
 	const res = await axios.post(ApiConstants.newTask, { ...task });
@@ -58,4 +61,9 @@ export const swapTask = createAsyncThunk('task/swap', async ({ dropTaskIndex, dr
 		dropTaskId,
 		dropTaskOrderId
 	})
+})
+
+export const completeTask = createAsyncThunk('task/complete',async ({taskId}:{taskId:string})=>{
+	const res = await axios.post(ApiConstants.markTaskAsComplete,{taskId});
+	return res.data.data;
 })

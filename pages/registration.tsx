@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import React,{useState} from 'react'
 import { useAppDispatch } from '../hooks/redux_hooks';
-import { registrationRequest } from '../redux/user/user';
+import { registrationRequest } from '../redux/user/userServices';
 
 export default function Registration() {
 	const [name,setName] =useState('');
@@ -30,7 +30,7 @@ export default function Registration() {
 				<div className='text-body mb-1'>Email</div>
 				<input className='input-field mb-3 w-full' onChange={(ele)=>setEmail(ele.target.value)} />
 				<div className='text-body mb-1'>Password</div>
-				<input className='input-field mb-8 w-full' onChange={(ele)=>setPassword(ele.target.value)}  />
+				<input type='password' className='input-field mb-8 w-full' onChange={(ele)=>setPassword(ele.target.value)}  />
 				<button className='btn-primary block mb-3 w-full' onClick={onSignUp}>Sign Up</button>
 				<div className='text-body text-center'>Already have an account? <button className='text-seconday' onClick={()=>router.push('/')}>Sign in</button></div>
 			</div>

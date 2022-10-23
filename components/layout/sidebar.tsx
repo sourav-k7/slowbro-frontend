@@ -73,7 +73,6 @@ export default function Sidebar() {
 	}
 
 	function addSubTask() {
-		console.log(task);
 		if (newSubTaskInput != '') {
 			setSubTask(state => [
 				...state,

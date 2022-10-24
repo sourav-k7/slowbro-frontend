@@ -4,8 +4,8 @@ import { AiOutlineClose } from 'react-icons/ai';
 import { Task, Subtask, Doubt, TaskStatus } from '../../model/task';
 import QuestionTile from './question_tile';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux_hooks';
-import { createTask, updateTask } from '../../redux/task/taskServices';
-import { closeSidebar } from '../../redux/task/task';
+import { completeTask, createTask, updateTask } from '../../redux/task/taskServices';
+import { closeSidebar, markAsUncompleteTask } from '../../redux/task/task';
 import SubtaskTile from '../sub_task_tile';
 import DropDownMenu from './drop_down_menu';
 
@@ -20,6 +20,7 @@ export default function Sidebar() {
 	const [name, setName] = useState('');
 	const [description, setDescription] = useState('');
 	const [status, setStatus] = useState<TaskStatus>(TaskStatus.unstarted);
+	const [statusOption, setStatusOption] = useState<TaskStatus[]>([]);
 	const [subTask, setSubTask] = useState<Subtask[]>([]);
 	const [newSubTaskInput, setNewSubtaskInput] = useState('');
 	const [point, setPoint] = useState<number>(0);
@@ -46,6 +47,7 @@ export default function Sidebar() {
 			setPoint(task.point);
 			setDoubt(task.doubt);
 			setComments(task.comments);
+			setStatusOption(Object.values(TaskStatus).map(val => val));
 		} else {
 			setName('');
 			setDescription('');
@@ -53,6 +55,7 @@ export default function Sidebar() {
 			setPoint(0);
 			setDoubt([]);
 			setComments([]);
+			setStatusOption([TaskStatus.unstarted, TaskStatus.started]);
 		}
 
 	}, [isSidebarOpen, task])
@@ -89,10 +92,10 @@ export default function Sidebar() {
 		setDoubt(state => state.filter(dbt => dbt.question != rmDomain.question))
 	}
 
-	function updateAnswer(questionId:string,answer:string){
-		setDoubt(state=>state.map(quest=>{
-			if(quest._id==questionId){
-				const tempQuestion = {...quest};
+	function updateAnswer(questionId: string, answer: string) {
+		setDoubt(state => state.map(quest => {
+			if (quest._id == questionId) {
+				const tempQuestion = { ...quest };
 				tempQuestion.answer = answer;
 				return tempQuestion;
 			}
@@ -150,13 +153,31 @@ export default function Sidebar() {
 			point,
 			project: project!._id,
 		} as Task));
+		if (status == TaskStatus.completed) {
+			dispatch<any>(completeTask({ taskId: task!._id }));
+		}
+
+		if (task?.status != status) {
+			dispatch<any>(markAsUncompleteTask({
+				_id: task!._id,
+				task: name,
+				description,
+				subtask: subTask,
+				status: status,
+				comments,
+				doubt,
+				point,
+				project: project!._id,
+			} as Task));
+		}
+
 		closeSideBar();
 	}
 
 	function closeSideBar() {
 		dispatch(closeSidebar());
 	}
-	
+
 	return (
 		<animated.div style={sidebarStyle} className={`overflow-x-auto relative`}>
 			<div className='h-full fixed w-2/5 overflow-y-auto bg-gray-900 p-3 no-scrollbar'>
@@ -174,8 +195,8 @@ export default function Sidebar() {
 				/>
 				<div className='w-32 mb-3'>
 					<DropDownMenu selectedOption={status?.toString()}
-						Options={Object.values(TaskStatus).map(val => val)}
-						onOptionClick={(index) => { setStatus(Object.values(TaskStatus)[index]) }} />
+						Options={statusOption}
+						onOptionClick={(index) => { setStatus(statusOption[index]) }} />
 				</div>
 				<div className='font-semibold text-lg'>Subtask</div>
 				<div>
@@ -216,7 +237,7 @@ export default function Sidebar() {
 								answer={dbt.answer}
 								bgColor={'bg-slate-700'}
 								handleRemove={() => removeDoubt(dbt)}
-								handleAnswerUpdate={(answer)=>{updateAnswer(dbt._id,answer)}}
+								handleAnswerUpdate={(answer) => { updateAnswer(dbt._id, answer) }}
 							/>
 
 						})

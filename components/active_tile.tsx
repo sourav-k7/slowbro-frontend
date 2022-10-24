@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { AiOutlineClose } from 'react-icons/ai';
 import { useAppDispatch, useAppSelector } from '../hooks/redux_hooks';
 import { Doubt, Subtask, Task, TaskStatus } from '../model/task';
-import { updateTask } from '../redux/task/taskServices';
+import { completeTask, updateTask } from '../redux/task/taskServices';
 import DropDownMenu from './layout/drop_down_menu';
 import QuestionTile from './layout/question_tile';
 import SubtaskTile from './sub_task_tile';
@@ -69,6 +69,9 @@ export default function ActiveTile({ task }: PropType) {
 		const newStatus = Object.values(TaskStatus)[index];
 		setStatus(newStatus);
 		handleUpdateTask('status', newStatus);
+		if(newStatus == TaskStatus.completed){
+			dispatch<any>(completeTask({taskId:task!._id}));
+		}
 	}
 
 	function removeDoubt(rmDomain: Doubt) {

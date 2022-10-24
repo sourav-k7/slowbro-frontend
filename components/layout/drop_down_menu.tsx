@@ -4,7 +4,7 @@ import { config, useTransition, animated } from 'react-spring';
 
 interface PropType {
 	selectedOption: string,
-	Options: String[],
+	Options: string[],
 	onOptionClick: (a: number) => void
 }
 

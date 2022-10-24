@@ -26,6 +26,11 @@ export const getAllTodayCompletedTask = createAsyncThunk('task/allTodayCompleted
 	return res.data.data;
 })
 
+export const getAllPreviouslyCompletedTask = createAsyncThunk('task/allPreviouslyCompletedTask',async(skip:number)=>{
+	const res =await axios.get(ApiConstants.getAllPreviouslyCompletedTask,{params:{skip}});
+	return res.data.data;
+})
+
 export const createTask = createAsyncThunk('task/newTask', async (task: Task) => {
 	const res = await axios.post(ApiConstants.newTask, { ...task });
 	return res.data.data;

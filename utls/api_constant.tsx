@@ -16,4 +16,5 @@ export abstract class ApiConstants {
 	static readonly swapTask:string = '/task/swap';
 	static readonly getAllTodayCompletedTask:string = '/task/today';
 	static readonly markTaskAsComplete:string = '/task/complete';
+	static readonly getAllPreviouslyCompletedTask:string='/task/previous';
 }

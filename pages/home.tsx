@@ -17,6 +17,7 @@ import TodoList from '../components/todo_list';
 import { selectProject, selectTask } from '../redux/task/task';
 import { TaskStatus } from '../model/task';
 import TodayCompletedTaskList from '../components/today_completed_task_list';
+import PreviouslyCompletedTask from '../components/previously_completed_task';
 
 
 
@@ -114,11 +115,7 @@ export default function Home() {
 :					activeTask.map(tk=><ActiveTile key={tk._id} task={tk} />)
 				}
 				<TodoList />
-				<ToggleTaskList title={'Previously completed task'}>
-					{/* <TaskTitleTile index={1} title={'Task 1'} />
-					<TaskTitleTile index={2} title={'Task 1'} />
-					<TaskTitleTile index={3} title={'Task 1'} /> */}
-				</ToggleTaskList>
+				<PreviouslyCompletedTask />
 			</div>
 			<Sidebar />
 

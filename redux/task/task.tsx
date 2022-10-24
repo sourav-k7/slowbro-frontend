@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, ThunkAction } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import { Task, TaskStatus } from "../../model/task";
-import { completeTask, createProject, createTask, getAllPendingTask, getAllProject, getAllTodayCompletedTask, swapTask, updateTask } from "./taskServices";
+import { completeTask, createProject, createTask, getAllPendingTask, getAllPreviouslyCompletedTask, getAllProject, getAllTodayCompletedTask, swapTask, updateTask } from "./taskServices";
 import { ListType, SelectTaskPayloadType, TaskStateType, TaskSwapType } from "./taskTypes";
 
 //! reset all new variable to logout reducer
@@ -151,6 +151,17 @@ const taskSlice = createSlice({
 			.addCase(completeTask.rejected, (state, action) => {
 				state.loading = false;
 				toast.error(action.error.message ?? 'Something went wrong');
+			})
+			.addCase(getAllPreviouslyCompletedTask.pending,(state)=>{
+				state.loading = true;
+			})
+			.addCase(getAllPreviouslyCompletedTask.fulfilled,(state,action)=>{
+				state.loading = false;
+				state.previouslyCompletedTask.push(...action.payload);
+			})
+			.addCase(getAllPreviouslyCompletedTask.rejected,(state,action)=>{
+				state.loading = false;
+				toast.error(action.error.message??"Something went wrong while fetching previously completed task");
 			})
 	}
 })

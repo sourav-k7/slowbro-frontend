@@ -1,9 +1,12 @@
 import Head from 'next/head';
 import React, { useEffect, useRef, useState } from 'react'
 import { AiOutlineClose } from 'react-icons/ai';
+import { BiEdit } from 'react-icons/bi';
 import { useAppDispatch, useAppSelector } from '../hooks/redux_hooks';
 import { Doubt, Subtask, Task, TaskStatus } from '../model/task';
+import { selectTask } from '../redux/task/task';
 import { completeTask, updateTask } from '../redux/task/taskServices';
+import { ListType, SelectTaskPayloadType } from '../redux/task/taskTypes';
 import DropDownMenu from './layout/drop_down_menu';
 import QuestionTile from './layout/question_tile';
 import SubtaskTile from './sub_task_tile';
@@ -69,8 +72,8 @@ export default function ActiveTile({ task }: PropType) {
 		const newStatus = Object.values(TaskStatus)[index];
 		setStatus(newStatus);
 		handleUpdateTask('status', newStatus);
-		if(newStatus == TaskStatus.completed){
-			dispatch<any>(completeTask({taskId:task!._id}));
+		if (newStatus == TaskStatus.completed) {
+			dispatch<any>(completeTask({ taskId: task!._id }));
 		}
 	}
 
@@ -107,7 +110,12 @@ export default function ActiveTile({ task }: PropType) {
 				<meta charSet="UTF-8" />
 			</Head>
 
-			<div className='text-xl font-semibold'>{task.task}</div>
+			<div className='flex justify-between items-center'>
+				<div className='text-xl font-semibold'>{task.task}</div>
+				<BiEdit size={30} 
+				className={`cursor-pointer`}
+				onClick={() => dispatch(selectTask({ id: task._id, type: ListType.pending } as SelectTaskPayloadType))} />
+			</div>
 			<div className='text-gray-400 mb-3'>{selectedProject?.name}</div>
 			<div className='mb-3 w-32'>
 				<DropDownMenu

@@ -16,8 +16,7 @@ interface PropType {
 }
 
 export default function ActiveTile({ task }: PropType) {
-	const taskState = useAppSelector(state => state.task);
-	const selectedProject = taskState.selectedProject;
+	const selectedProject = useAppSelector(state => state.task.selectedProject);
 	const dispatch = useAppDispatch();
 	const [status, setStatus] = useState(task.status);
 	const [subTask, setSubTask] = useState<Subtask[]>(task.subtask);

@@ -10,9 +10,8 @@ import TaskTitleTile from './task_title_tile';
 export default function TodayCompletedTaskList() {
 	const [setDragId, handleDrop] = useDragDrop(ListType.today);
 	const dispatch = useAppDispatch();
-	const taskState = useAppSelector(state=>state.task);
-	const todayCompleteList =taskState.todayCompleted;
-	const selectedProject = taskState.selectedProject;
+	const todayCompleteList =useAppSelector(state => state.task.todayCompleted);
+	const selectedProject = useAppSelector(state => state.task.selectedProject);
 
 	useEffect(() => {
 		dispatch<any>(getAllTodayCompletedTask());
@@ -23,15 +22,15 @@ export default function TodayCompletedTaskList() {
 		<ToggleTaskList title={"Today's completed task"} >
 			{todayCompleteList
 			.filter(tk => tk.project == selectedProject?._id)
-			.map((tk,index) =>
+			.map((tk) =>
 						<TaskTitleTile  
 						title={tk.task} 
 						id={tk._id} 
 						key={tk._id} 
 						point={tk.point}
 						handleClick={() => dispatch(selectTask({ id: tk._id, type: ListType.today } as SelectTaskPayloadType))}
-						handleDrag={() => { setDragId(index) }}
-					handleDrop={() => { handleDrop(index) }}
+						handleDrag={() => { setDragId(tk._id) }}
+					handleDrop={() => { handleDrop(tk._id) }}
 						/>
 					)}
 		</ToggleTaskList>

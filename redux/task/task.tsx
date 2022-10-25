@@ -38,7 +38,7 @@ const taskSlice = createSlice({
 		selectProject: (state, action) => {
 			state.selectedProject = state.projects.find(proj => proj._id == action.payload);
 		},
-		markAsUncompleteTask: (state, action:PayloadAction<Task>) => {
+		markAsUncompleteTask: (state, action: PayloadAction<Task>) => {
 			state.todayCompleted = state.todayCompleted.filter(tk => tk._id != action.payload._id);
 			state.previouslyCompletedTask = state.previouslyCompletedTask.filter(tk => tk._id != action.payload._id);
 			state.pendingTasks.push(action.payload);
@@ -115,8 +115,21 @@ const taskSlice = createSlice({
 				toast.error(action.error.message ?? "Something went wrong while updating new project");
 			})
 			.addCase(swapTask.pending, (state, { meta }) => {
-				const drapIndex = meta.arg.dragTaskIndex;
-				const dropIndex = meta.arg.dropTaskIndex;
+				const dragId = meta.arg.dragTaskId;
+				const dropId = meta.arg.dropTaskId;
+				const listType = meta.arg.type;
+				let swapList: Task[] = [];
+				if (listType == ListType.pending) {
+					swapList = state.pendingTasks;
+				}
+				else if (listType == ListType.today) {
+					swapList = state.todayCompleted;
+				}
+				else {
+					swapList = state.previouslyCompletedTask;
+				}
+				let drapIndex = swapList.findIndex(tk => tk._id == dragId);
+				let dropIndex = swapList.findIndex(tk => tk._id == dropId);
 				const type = meta.arg.type;
 				if (type == ListType.pending) {
 					[state.pendingTasks[drapIndex], state.pendingTasks[dropIndex]] = [state.pendingTasks[dropIndex], state.pendingTasks[drapIndex]];
@@ -152,16 +165,16 @@ const taskSlice = createSlice({
 				state.loading = false;
 				toast.error(action.error.message ?? 'Something went wrong');
 			})
-			.addCase(getAllPreviouslyCompletedTask.pending,(state)=>{
+			.addCase(getAllPreviouslyCompletedTask.pending, (state) => {
 				state.loading = true;
 			})
-			.addCase(getAllPreviouslyCompletedTask.fulfilled,(state,action)=>{
+			.addCase(getAllPreviouslyCompletedTask.fulfilled, (state, action) => {
 				state.loading = false;
 				state.previouslyCompletedTask.push(...action.payload);
 			})
-			.addCase(getAllPreviouslyCompletedTask.rejected,(state,action)=>{
+			.addCase(getAllPreviouslyCompletedTask.rejected, (state, action) => {
 				state.loading = false;
-				toast.error(action.error.message??"Something went wrong while fetching previously completed task");
+				toast.error(action.error.message ?? "Something went wrong while fetching previously completed task");
 			})
 	}
 })

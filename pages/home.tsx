@@ -27,9 +27,9 @@ export default function Home() {
 	const dispatch = useAppDispatch();
 	const [isProjectModalVisible, setIsProjectModelVisible] = useState(false);
 	const [newProjectName, setNewProjectName] = useState('');
-	const taskState = useAppSelector(state=>state.task);
-	const selectedProject = taskState.selectedProject;
-	const pendingTask = taskState.pendingTasks;
+	const selectedProject = useAppSelector(state=>state.task.selectedProject);
+	const projects = useAppSelector(state=>state.task.projects);
+	const pendingTask = useAppSelector(state=>state.task.pendingTasks);
 	let activeTask = pendingTask.filter(tk=>tk.project==selectedProject?._id && tk.status == TaskStatus.started);
 
 	useEffect(() => {
@@ -83,16 +83,16 @@ export default function Home() {
 					<div className=''>
 						<h1 className='text-6xl font-bold '>Tasks</h1>
 						<div className='flex items-center gap-1'>
-							{taskState.projects.length > 0 &&
+							{projects.length > 0 &&
 								<DropDownMenu
 									selectedOption={selectedProject?.name ?? ''}
-									Options={taskState.projects.map(proj => proj.name)}
-									onOptionClick={(index) => { dispatch(selectProject(taskState.projects[index]._id)) }} />}
+									Options={projects.map(proj => proj.name)}
+									onOptionClick={(index) => { dispatch(selectProject(projects[index]._id)) }} />}
 							<button
-								className={`bg-slate-700 rounded ${taskState.projects.length == 0 ? 'w-full' : ''} flex 
+								className={`bg-slate-700 rounded ${projects.length == 0 ? 'w-full' : ''} flex 
 										items-center justify-center`}
 								onClick={toggleNewProjectModalVisibility}>
-								{taskState.projects.length == 0 && <span>Add Project</span>}	<BsPlus size={30} />
+								{projects.length == 0 && <span>Add Project</span>}	<BsPlus size={30} />
 							</button>
 						</div>
 					</div>

@@ -11,9 +11,8 @@ export default function PreviouslyCompletedTask() {
 	const [setDragId, handleDrop] = useDragDrop(ListType.previous);
 	const dispatch = useAppDispatch();
 	// const lastElementRef = useRef() as React.MutableRefObject<HTMLInputElement>;
-	const taskState= useAppSelector(state => state.task);
-	const previouslyCompletedTask = taskState.previouslyCompletedTask;
-	const selectedProject = taskState.selectedProject;
+	const previouslyCompletedTask = useAppSelector(state => state.task.previouslyCompletedTask);
+	const selectedProject = useAppSelector(state => state.task.selectedProject);
 	// const [lastElementVisible, setLastElementVisible] = useState<boolean>();
 
 	// useEffect(() => {
@@ -35,15 +34,15 @@ export default function PreviouslyCompletedTask() {
 		
 			{previouslyCompletedTask
 				.filter(tk => tk.project == selectedProject?._id)
-				.map((tk, index) =>
+				.map((tk) =>
 					<TaskTitleTile
 						title={tk.task}
 						id={tk._id}
 						key={tk._id}
 						point={tk.point}
 						handleClick={() => dispatch(selectTask({ id: tk._id, type: ListType.today } as SelectTaskPayloadType))}
-						handleDrag={() => { setDragId(index) }}
-						handleDrop={() => { handleDrop(index) }}
+						handleDrag={() => { setDragId(tk._id) }}
+						handleDrop={() => { handleDrop(tk._id) }}
 					/>
 				)}
 				

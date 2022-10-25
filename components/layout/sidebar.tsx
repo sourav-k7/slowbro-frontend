@@ -13,9 +13,8 @@ import DropDownMenu from './drop_down_menu';
 
 export default function Sidebar() {
 	const dispatch = useAppDispatch();
-	const taskState = useAppSelector(state => state.task);
-	const isSidebarOpen = taskState.isSidebarOpen;
-	const task = taskState.selectedTask;
+	const isSidebarOpen = useAppSelector(state => state.task.isSidebarOpen);
+	const task = useAppSelector(state => state.task.selectedTask);
 	let sidebarWidth = 300;
 	const [name, setName] = useState('');
 	const [description, setDescription] = useState('');
@@ -28,7 +27,7 @@ export default function Sidebar() {
 	const [newDoubtInput, setNewDoubtInput] = useState('');
 	const [comments, setComments] = useState<string[]>([]);
 	const [newCommentInput, setNewCommentInput] = useState('');
-	const project = taskState.selectedProject;
+	const project = useAppSelector(state => state.task.selectedProject);
 
 	if (typeof window !== 'undefined') {
 		sidebarWidth = (2 * window.innerWidth) / 5;

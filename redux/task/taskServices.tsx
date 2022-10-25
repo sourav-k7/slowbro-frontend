@@ -43,7 +43,7 @@ export const updateTask = createAsyncThunk('task/updateTask', async (task: Task)
 	return res.data.data;
 })
 
-export const swapTask = createAsyncThunk('task/swap', async ({ dropTaskIndex, dragTaskIndex, type }: TaskSwapType, thunkApi) => {
+export const swapTask = createAsyncThunk('task/swap', async ({ dragTaskId, dropTaskId, type }: TaskSwapType, thunkApi) => {
 	let swapList: Task[] = [];
 	const state = thunkApi.getState() as { task: TaskStateType, user: any };
 	const task = state.task;
@@ -56,9 +56,9 @@ export const swapTask = createAsyncThunk('task/swap', async ({ dropTaskIndex, dr
 	else {
 		swapList = task.previouslyCompletedTask;
 	}
-	let dragTaskId = swapList[dragTaskIndex]._id;
+	let dragTaskIndex = swapList.findIndex(tk=>tk._id==dragTaskId);
+	let dropTaskIndex = swapList.findIndex(tk=>tk._id==dropTaskId);
 	let dragTaskOrderId = swapList[dragTaskIndex].orderId;
-	let dropTaskId = swapList[dropTaskIndex]._id;
 	let dropTaskOrderId = swapList[dropTaskIndex].orderId;
 	const res = await axios.post(ApiConstants.swapTask, {
 		dragTaskId,

@@ -3,14 +3,14 @@ import { swapTask } from '../redux/task/taskServices';
 import { ListType, TaskSwapType } from "../redux/task/taskTypes";
 import { useAppDispatch } from './redux_hooks';
 
-function useDragDrop(listType:ListType):[ React.Dispatch<React.SetStateAction<number| undefined>>,(a:number)=>void]{
-	const [dragId,setDragId] = useState<number>();
+function useDragDrop(listType:ListType):[ React.Dispatch<React.SetStateAction<string| undefined>>,(a:string)=>void]{
+	const [dragId,setDragId] = useState<string>();
 	const dispatch = useAppDispatch();
 
-	const handleDrop = (dropId: number) => {
+	const handleDrop = (dropId: string) => {
 		dispatch<any>(swapTask({
-			dragTaskIndex: dragId,
-			dropTaskIndex: dropId,
+			dragTaskId: dragId,
+			dropTaskId: dropId,
 			type: listType,
 		} as TaskSwapType));
 	};

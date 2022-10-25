@@ -22,8 +22,8 @@ export interface SelectTaskPayloadType{
 }
 
 export interface TaskSwapType{
-	dragTaskIndex:number,
-	dropTaskIndex:number,
+	dragTaskId:string,
+	dropTaskId:string,
 	type:ListType
 }
 

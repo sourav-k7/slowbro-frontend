@@ -72,7 +72,12 @@ export default function ActiveTile({ task }: PropType) {
 		setStatus(newStatus);
 		handleUpdateTask('status', newStatus);
 		if (newStatus == TaskStatus.completed) {
-			dispatch<any>(completeTask({ taskId: task!._id }));
+			dispatch<any>(completeTask({
+				...task,
+				status: status,
+				subtask: subTask,
+				doubt: doubt,
+			} as Task));
 		}
 	}
 
@@ -111,9 +116,9 @@ export default function ActiveTile({ task }: PropType) {
 
 			<div className='flex justify-between items-center'>
 				<div className='text-xl font-semibold'>{task.task}</div>
-				<BiEdit size={30} 
-				className={`cursor-pointer`}
-				onClick={() => dispatch(selectTask({ id: task._id, type: ListType.pending } as SelectTaskPayloadType))} />
+				<BiEdit size={30}
+					className={`cursor-pointer`}
+					onClick={() => dispatch(selectTask({ id: task._id, type: ListType.pending } as SelectTaskPayloadType))} />
 			</div>
 			<div className='text-gray-400 mb-3'>{selectedProject?.name}</div>
 			<div className='mb-3 w-32'>

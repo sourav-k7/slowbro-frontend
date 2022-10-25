@@ -21,13 +21,13 @@ export const getAllPendingTask = createAsyncThunk('task/allPendingTask', async (
 	return res.data.data;
 })
 
-export const getAllTodayCompletedTask = createAsyncThunk('task/allTodayCompletedTask',async ()=>{
+export const getAllTodayCompletedTask = createAsyncThunk('task/allTodayCompletedTask', async () => {
 	const res = await axios.get(ApiConstants.getAllTodayCompletedTask);
 	return res.data.data;
 })
 
-export const getAllPreviouslyCompletedTask = createAsyncThunk('task/allPreviouslyCompletedTask',async(skip:number)=>{
-	const res =await axios.get(ApiConstants.getAllPreviouslyCompletedTask,{params:{skip}});
+export const getAllPreviouslyCompletedTask = createAsyncThunk('task/allPreviouslyCompletedTask', async (skip: number) => {
+	const res = await axios.get(ApiConstants.getAllPreviouslyCompletedTask, { params: { skip } });
 	return res.data.data;
 })
 
@@ -56,8 +56,8 @@ export const swapTask = createAsyncThunk('task/swap', async ({ dragTaskId, dropT
 	else {
 		swapList = task.previouslyCompletedTask;
 	}
-	let dragTaskIndex = swapList.findIndex(tk=>tk._id==dragTaskId);
-	let dropTaskIndex = swapList.findIndex(tk=>tk._id==dropTaskId);
+	let dragTaskIndex = swapList.findIndex(tk => tk._id == dragTaskId);
+	let dropTaskIndex = swapList.findIndex(tk => tk._id == dropTaskId);
 	let dragTaskOrderId = swapList[dragTaskIndex].orderId;
 	let dropTaskOrderId = swapList[dropTaskIndex].orderId;
 	const res = await axios.post(ApiConstants.swapTask, {
@@ -68,7 +68,12 @@ export const swapTask = createAsyncThunk('task/swap', async ({ dragTaskId, dropT
 	})
 })
 
-export const completeTask = createAsyncThunk('task/complete',async ({taskId}:{taskId:string})=>{
-	const res = await axios.post(ApiConstants.markTaskAsComplete,{taskId});
+export const completeTask = createAsyncThunk('task/complete', async ({ _id }: Task) => {
+	const res = await axios.post(ApiConstants.markTaskAsComplete, { taskId: _id });
 	return res.data.data;
+})
+
+export const deleteTask = createAsyncThunk('task/delete',async ({id}:{id:string})=>{
+	const res = await axios.delete(ApiConstants.deleteTask+`/${id}`);
+	return id;
 })

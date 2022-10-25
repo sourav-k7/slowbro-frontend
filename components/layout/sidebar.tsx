@@ -4,7 +4,7 @@ import { AiOutlineClose } from 'react-icons/ai';
 import { Task, Subtask, Doubt, TaskStatus } from '../../model/task';
 import QuestionTile from './question_tile';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux_hooks';
-import { completeTask, createTask, updateTask } from '../../redux/task/taskServices';
+import { completeTask, createTask, deleteTask, updateTask } from '../../redux/task/taskServices';
 import { closeSidebar, markAsUncompleteTask } from '../../redux/task/task';
 import SubtaskTile from '../sub_task_tile';
 import DropDownMenu from './drop_down_menu';
@@ -152,11 +152,22 @@ export default function Sidebar() {
 			point,
 			project: project!._id,
 		} as Task));
+
 		if (status == TaskStatus.completed) {
-			dispatch<any>(completeTask({ taskId: task!._id }));
+			dispatch<any>(completeTask({
+				_id: task?._id,
+				task: name,
+				description,
+				subtask: subTask,
+				status: task?.status,
+				comments,
+				doubt,
+				point,
+				project: project!._id,
+			} as Task));
 		}
 
-		if (task?.status != status) {
+		if (task?.status == TaskStatus.completed && status !== TaskStatus.completed) {
 			dispatch<any>(markAsUncompleteTask({
 				_id: task!._id,
 				task: name,
@@ -175,6 +186,11 @@ export default function Sidebar() {
 
 	function closeSideBar() {
 		dispatch(closeSidebar());
+	}
+
+	function handleDelete() {
+		dispatch<any>(deleteTask({ id: task!._id }));
+		closeSidebar();
 	}
 
 	return (
@@ -273,13 +289,21 @@ export default function Sidebar() {
 					/>
 				</div>
 
-				<div>
-					{
-						task == null
-							? <button className='btn-primary mr-3' onClick={createNewTask}>Create</button>
-							: <button className='btn-primary mr-3' onClick={handleUpdateTask}>Save</button>
-					}
-					<button>cancel</button>
+				<div className='flex justify-between items-center'>
+					<div>
+						{
+							task == null
+								? <button className='btn-primary mr-3' onClick={createNewTask}>Create</button>
+								: <button className='btn-primary mr-3' onClick={handleUpdateTask}>Save</button>
+						}
+						<button>Cancel</button>
+					</div>
+					{task != null && <button
+						className='bg-red-500 text-white py-2 rounded px-3'
+						onClick={handleDelete}
+					>
+						Delete
+					</button>}
 				</div>
 			</div>
 		</animated.div>

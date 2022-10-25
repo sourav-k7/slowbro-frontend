@@ -1,6 +1,6 @@
 export abstract class ApiConstants {
-	// static  readonly baseUrl : string = "http://localhost:5000/api/v1";
-	static  readonly baseUrl : string = "https://slowbro-backend.vercel.app/api/v1";
+	static  readonly baseUrl : string = "http://localhost:5000/api/v1";
+	// static  readonly baseUrl : string = "https://slowbro-backend.vercel.app/api/v1";
 	//auth
 	static readonly loginApi : string =  '/auth/login';
 	static readonly registractionApi : string =  '/auth/signup';
@@ -18,4 +18,5 @@ export abstract class ApiConstants {
 	static readonly getAllTodayCompletedTask:string = '/task/today';
 	static readonly markTaskAsComplete:string = '/task/complete';
 	static readonly getAllPreviouslyCompletedTask:string='/task/previous';
+	static readonly deleteTask:string ='/task/delete';
 }

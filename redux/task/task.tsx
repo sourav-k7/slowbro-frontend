@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, ThunkAction } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import { Task, TaskStatus } from "../../model/task";
-import { completeTask, createProject, createTask, getAllPendingTask, getAllPreviouslyCompletedTask, getAllProject, getAllTodayCompletedTask, swapTask, updateTask } from "./taskServices";
+import { completeTask, createProject, createTask, deleteTask, getAllPendingTask, getAllPreviouslyCompletedTask, getAllProject, getAllTodayCompletedTask, swapTask, updateTask } from "./taskServices";
 import { ListType, SelectTaskPayloadType, TaskStateType, TaskSwapType } from "./taskTypes";
 
 //! reset all new variable to logout reducer
@@ -153,17 +153,19 @@ const taskSlice = createSlice({
 				state.loading = false;
 				toast.error(action.error.message ?? "Something went wrong while fetching all today completed task.")
 			})
-			.addCase(completeTask.pending, (state) => {
+			.addCase(completeTask.pending, (state, action) => {
 				state.loading = true;
+				state.pendingTasks = state.pendingTasks.filter(tk => tk._id != action.meta.arg._id);
 			})
 			.addCase(completeTask.fulfilled, (state, action) => {
 				state.loading = false;
 				state.todayCompleted.push(action.payload);
-				state.pendingTasks = state.pendingTasks.filter(tk => tk._id != action.payload._id);
+				toast.success('Task completed');
 			})
 			.addCase(completeTask.rejected, (state, action) => {
 				state.loading = false;
 				toast.error(action.error.message ?? 'Something went wrong');
+				state.pendingTasks.push(action.meta.arg);
 			})
 			.addCase(getAllPreviouslyCompletedTask.pending, (state) => {
 				state.loading = true;
@@ -175,6 +177,20 @@ const taskSlice = createSlice({
 			.addCase(getAllPreviouslyCompletedTask.rejected, (state, action) => {
 				state.loading = false;
 				toast.error(action.error.message ?? "Something went wrong while fetching previously completed task");
+			})
+			.addCase(deleteTask.pending, (state) => {
+				state.loading = true;
+			})
+			.addCase(deleteTask.fulfilled, (state, action) => {
+				state.loading = false;
+				state.pendingTasks = state.pendingTasks.filter(tk => tk._id != action.payload);
+				state.todayCompleted = state.todayCompleted.filter(tk => tk._id != action.payload);
+				state.previouslyCompletedTask = state.previouslyCompletedTask.filter(tk => tk._id != action.payload);
+
+			})
+			.addCase(deleteTask.rejected, (state, action) => {
+				state.loading = false;
+				toast.error(action.error.message ?? "Something went wrong while deleting task");
 			})
 	}
 })

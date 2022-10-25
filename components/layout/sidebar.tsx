@@ -137,7 +137,7 @@ export default function Sidebar() {
 			project: project!._id,
 			orderId: (new Date().getTime()),
 		} as Task));
-		closeSideBar();
+		handleCloseSideBar();
 	}
 
 	function handleUpdateTask() {
@@ -181,23 +181,23 @@ export default function Sidebar() {
 			} as Task));
 		}
 
-		closeSideBar();
+		handleCloseSideBar();
 	}
 
-	function closeSideBar() {
+	function handleCloseSideBar() {
 		dispatch(closeSidebar());
 	}
 
 	function handleDelete() {
 		dispatch<any>(deleteTask({ id: task!._id }));
-		closeSidebar();
+		handleCloseSideBar();
 	}
 
 	return (
 		<animated.div style={sidebarStyle} className={`overflow-x-auto relative`}>
 			<div className='h-full fixed w-2/5 overflow-y-auto bg-gray-900 p-3 no-scrollbar'>
 				<div>
-					<AiOutlineClose color='white' size={25} className="ml-auto mr-0 cursor-pointer" onClick={closeSideBar} />
+					<AiOutlineClose color='white' size={25} className="ml-auto mr-0 cursor-pointer" onClick={handleCloseSideBar} />
 				</div>
 				<div className='font-semibold text-lg'>Task Name</div>
 				<textarea className='multiline-input-field mb-3 w-full'

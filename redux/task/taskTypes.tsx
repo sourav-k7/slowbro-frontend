@@ -32,3 +32,8 @@ export enum ListType {
 	today = 'today',
 	previous = 'previos'
 }
+
+export interface PreviousTaskServiceType{
+	skip:number,
+	project:string,
+}

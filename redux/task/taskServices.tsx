@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit"
 import { Task } from "../../model/task";
 import { ApiConstants } from "../../utls/api_constant";
 import axios from '../../utls/axios'
-import { CreateProjectType, ListType, TaskStateType, TaskSwapType } from "./taskTypes";
+import { CreateProjectType, ListType, PreviousTaskServiceType, TaskStateType, TaskSwapType } from "./taskTypes";
 
 
 
@@ -26,8 +26,9 @@ export const getAllTodayCompletedTask = createAsyncThunk('task/allTodayCompleted
 	return res.data.data;
 })
 
-export const getAllPreviouslyCompletedTask = createAsyncThunk('task/allPreviouslyCompletedTask', async (skip: number) => {
-	const res = await axios.get(ApiConstants.getAllPreviouslyCompletedTask, { params: { skip } });
+export const getAllPreviouslyCompletedTask = createAsyncThunk('task/allPreviouslyCompletedTask', async ({skip,project}:PreviousTaskServiceType) => {
+	console.log(skip,project);
+	const res = await axios.get(ApiConstants.getAllPreviouslyCompletedTask, { params: { skip,project } });
 	return res.data.data;
 })
 

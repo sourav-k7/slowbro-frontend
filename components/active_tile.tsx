@@ -128,7 +128,7 @@ export default function ActiveTile({ task }: PropType) {
 					onOptionClick={updateStatus} />
 			</div>
 			<div className='font-semibold '>Description</div>
-			<div className='bg-slate-700 mb-3 p-3 rounded'>{task.description}</div>
+			<div className='bg-slate-700 mb-3 p-3 rounded'>{task.description!=''?task.description:"No description"}</div>
 			{/* <div>Image</div> */}
 			<div className='font-semibold'>SubTask</div>
 			<div className='bg-slate-700 p-3 rounded mb-3'>

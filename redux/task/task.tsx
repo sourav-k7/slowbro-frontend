@@ -42,6 +42,9 @@ const taskSlice = createSlice({
 			state.todayCompleted = state.todayCompleted.filter(tk => tk._id != action.payload._id);
 			state.previouslyCompletedTask = state.previouslyCompletedTask.filter(tk => tk._id != action.payload._id);
 			state.pendingTasks.push(action.payload);
+		},
+		sortPendingTask: (state) => {
+			state.pendingTasks = state.pendingTasks.sort((t1, t2) => t2.point - t1.point);
 		}
 	},
 	extraReducers: builder => {
@@ -196,4 +199,4 @@ const taskSlice = createSlice({
 })
 
 export default taskSlice.reducer;
-export const { selectTask, selectProject, closeSidebar, markAsUncompleteTask } = taskSlice.actions;
+export const { selectTask, selectProject, closeSidebar, markAsUncompleteTask, sortPendingTask } = taskSlice.actions;

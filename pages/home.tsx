@@ -1,7 +1,6 @@
 import Image from 'next/image'
 import React, { useState, useEffect } from 'react'
 import Sidebar from '../components/layout/sidebar';
-import ToggleTaskList from '../components/layout/toggle_list'
 import ActiveTile from '../components/active_tile';
 import bugImage from '../public/bug.png'
 import DropDownMenu from '../components/layout/drop_down_menu';

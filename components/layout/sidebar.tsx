@@ -7,7 +7,7 @@ import { completeTask, createTask, deleteTask, updateTask } from '../../redux/ta
 import { closeSidebar, markAsUncompleteTask } from '../../redux/task/task';
 import SubtaskTile from '../sub_task_tile';
 import DropDownMenu from './drop_down_menu';
-import priorityIcon from '../../utls/priorityIcon';
+import priorityIcon from './priorityIcon';
 
 
 export default function Sidebar() {

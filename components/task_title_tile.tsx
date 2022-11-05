@@ -1,6 +1,6 @@
 import React from 'react'
 import { PriorityType } from '../model/task'
-import priorityIcon from '../utls/priorityIcon'
+import priorityIcon from './layout/priorityIcon'
 
 interface PropTypes {
 	title: string,

@@ -1,4 +1,3 @@
-import { Project } from "./project";
 
 export interface Task{
 	_id:string,
@@ -7,6 +6,7 @@ export interface Task{
 	img_url:string,
 	subtask:Subtask[],
 	status:TaskStatus,
+	priority:PriorityType,
 	completionTime:string,
 	point:number,
 	doubt:Doubt[],
@@ -32,4 +32,10 @@ export enum TaskStatus{
 	unstarted='unstarted',
 	started='started',
 	completed='completed'
+}
+
+export enum PriorityType{
+	low='low',
+	medium='medium',
+	high='high'
 }

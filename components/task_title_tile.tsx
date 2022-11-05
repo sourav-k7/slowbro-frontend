@@ -1,16 +1,19 @@
 import React from 'react'
+import { PriorityType } from '../model/task'
+import priorityIcon from '../utls/priorityIcon'
 
 interface PropTypes {
 	title: string,
 	id: string,
 	point: number,
+	priority?:PriorityType,
 	handleClick:()=>void,
 	handleDrag:()=>void,
 	handleDrop:()=>void,
 	bgColor?:string,
 }
 
-export default function TaskTitleTile({ title, id, point,handleClick,handleDrag,handleDrop,bgColor='bg-slate-800' }: PropTypes) {
+export default function TaskTitleTile({ title, id, priority,point,handleClick,handleDrag,handleDrop,bgColor='bg-slate-800' }: PropTypes) {
 	return (
 
 		<div
@@ -23,7 +26,11 @@ export default function TaskTitleTile({ title, id, point,handleClick,handleDrag,
 			onClick={handleClick}
 		>
 			<div>{title}</div>
-			<div className='font-semibold'>{point} &#128293;</div>
+			<div className='font-semibold flex items-center w-20 justify-between'>
+			{priority && <div>{priorityIcon(priority)}</div>}
+			
+			<div>{point} &#128293;</div>
+			</div>
 		</div>
 
 	)

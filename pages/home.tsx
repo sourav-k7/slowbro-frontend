@@ -32,7 +32,6 @@ export default function Home() {
 	let activeTask = pendingTask.filter(tk=>tk.project==selectedProject?._id && tk.status == TaskStatus.started);
 
 	useEffect(() => {
-		console.log('in use Effect in home');
 		dispatch<any>(getAllProject());
 		dispatch<any>(getAllPendingTask());
 	}, [dispatch])

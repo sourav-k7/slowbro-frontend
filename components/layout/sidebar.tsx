@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { animated, update, useSpring } from 'react-spring'
+import { animated, useSpring } from 'react-spring'
 import { AiOutlineClose } from 'react-icons/ai';
-import { Task, Subtask, Doubt, TaskStatus } from '../../model/task';
-import QuestionTile from './question_tile';
+import { Task, Subtask, Doubt, TaskStatus, PriorityType } from '../../model/task';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux_hooks';
 import { completeTask, createTask, deleteTask, updateTask } from '../../redux/task/taskServices';
 import { closeSidebar, markAsUncompleteTask } from '../../redux/task/task';
 import SubtaskTile from '../sub_task_tile';
 import DropDownMenu from './drop_down_menu';
-
+import priorityIcon from '../../utls/priorityIcon';
 
 
 export default function Sidebar() {
@@ -20,6 +19,7 @@ export default function Sidebar() {
 	const [description, setDescription] = useState('');
 	const [status, setStatus] = useState<TaskStatus>(TaskStatus.unstarted);
 	const [statusOption, setStatusOption] = useState<TaskStatus[]>([]);
+	const [priority, setPriority] = useState<PriorityType>();
 	const [subTask, setSubTask] = useState<Subtask[]>([]);
 	const [newSubTaskInput, setNewSubtaskInput] = useState('');
 	const [point, setPoint] = useState<number>(0);
@@ -46,7 +46,8 @@ export default function Sidebar() {
 			setPoint(task.point);
 			setDoubt(task.doubt);
 			setComments(task.comments);
-			setStatusOption(Object.values(TaskStatus).map(val => val));
+			setStatusOption(Object.values(TaskStatus));
+			setPriority(task.priority ?? PriorityType.low);
 		} else {
 			setName('');
 			setDescription('');
@@ -54,9 +55,10 @@ export default function Sidebar() {
 			setPoint(0);
 			setDoubt([]);
 			setComments([]);
+			setStatus(TaskStatus.unstarted);
 			setStatusOption([TaskStatus.unstarted, TaskStatus.started]);
+			setPriority(PriorityType.low);
 		}
-
 	}, [isSidebarOpen, task])
 
 	function removeSubTask(rmTask: Subtask) {
@@ -134,6 +136,7 @@ export default function Sidebar() {
 			comments,
 			doubt,
 			point,
+			priority,
 			project: project!._id,
 			orderId: (new Date().getTime()),
 		} as Task));
@@ -150,6 +153,7 @@ export default function Sidebar() {
 			comments,
 			doubt,
 			point,
+			priority,
 			project: project!._id,
 		} as Task));
 
@@ -162,6 +166,7 @@ export default function Sidebar() {
 				status: task?.status,
 				comments,
 				doubt,
+				priority,
 				point,
 				project: project!._id,
 			} as Task));
@@ -177,6 +182,7 @@ export default function Sidebar() {
 				comments,
 				doubt,
 				point,
+				priority,
 				project: project!._id,
 			} as Task));
 		}
@@ -193,27 +199,42 @@ export default function Sidebar() {
 		handleCloseSideBar();
 	}
 
+	
+
 	return (
 		<animated.div style={sidebarStyle} className={`overflow-x-auto relative`}>
-			<div className='h-full fixed w-2/5 overflow-y-auto bg-gray-900 p-3 no-scrollbar'>
+			<div className='h-full fixed w-2/5 overflow-y-auto bg-gray-900 py-3 px-5 no-scrollbar'>
 				<div>
 					<AiOutlineClose color='white' size={25} className="ml-auto mr-0 cursor-pointer" onClick={handleCloseSideBar} />
 				</div>
-				<div className='font-semibold text-lg'>Task Name</div>
-				<textarea className='multiline-input-field mb-3 w-full'
+				<div className='font-semibold text-lg mb-2'>Task Name</div>
+				<textarea className='multiline-input-field mb-7 w-full'
 					onChange={(event) => { setName(event.target.value) }}
 					value={name}
 				/>
-				<div className='font-semibold text-lg'>Description</div>
-				<textarea className='multiline-input-field mb-3 w-full' onChange={(event) => { setDescription(event.target.value) }}
+				<div className='font-semibold text-lg mb-2'>Description</div>
+				<textarea className='multiline-input-field mb-7 w-full' onChange={(event) => { setDescription(event.target.value) }}
 					value={description}
 				/>
-				<div className='w-32 mb-3'>
-					<DropDownMenu selectedOption={status?.toString()}
-						Options={statusOption}
-						onOptionClick={(index) => { setStatus(statusOption[index]) }} />
+
+				<div className='grid grid-cols-2 gap-4 items-center mb-7 text-lg'>
+					<div className='flex items-center'>
+						<span className='font-semibold'>Status&nbsp;:&nbsp;</span>
+						<DropDownMenu selectedOption={status?.toString()}
+							Options={statusOption}
+							onOptionClick={(index) => { setStatus(statusOption[index]) }} />
+					</div>
+					<div className='flex items-center'>
+						<span className='font-semibold'>Priority&nbsp;:&nbsp;</span>
+						<DropDownMenu selectedOption={
+						<span className='flex items-center'>
+							{priorityIcon(priority)}&ensp;{priority}</span>
+					}
+							Options={Object.values(PriorityType)}
+							onOptionClick={(index) => { setPriority(Object.values(PriorityType)[index]) }} />
+					</div>
 				</div>
-				<div className='font-semibold text-lg'>Subtask</div>
+				<div className='font-semibold text-lg mb-2'>Subtask</div>
 				<div>
 					{
 						subTask.map((tk, index) =>
@@ -228,13 +249,13 @@ export default function Sidebar() {
 						)
 					}
 				</div>
-				<div className='flex flex-col items-start mb-3'>
+				<div className='flex flex-col mb-7 items-end'>
 					<textarea className='multiline-input-field w-full' placeholder='Enter Subtask'
 						onChange={(event) => { setNewSubtaskInput(event.target.value) }}
 						value={newSubTaskInput}
 					/>
 					<button
-						className='bg-slate-800 px-3 py-1 mt-2 rounded'
+						className='btn-primary py-1 mt-3 w-full'
 						onClick={addSubTask}
 					>
 						Add Subtask
@@ -242,33 +263,34 @@ export default function Sidebar() {
 				</div>
 
 
-				<div className='font-semibold text-lg'>Doubt</div>
+				<div className='font-semibold text-lg mb-2'>Doubt</div>
 				<div>
 					{
 						doubt.map((dbt, index) => {
-							return <QuestionTile
-								key={index}
-								question={dbt.question}
-								answer={dbt.answer}
-								bgColor={'bg-slate-700'}
-								handleRemove={() => removeDoubt(dbt)}
-								handleAnswerUpdate={(answer) => { updateAnswer(dbt._id, answer) }}
-							/>
+							// return <QuestionTile
+							// 	key={index}
+							// 	question={dbt.question}
+							// 	answer={dbt.answer}
+							// 	bgColor={'bg-slate-700'}
+							// 	handleRemove={() => removeDoubt(dbt)}
+							// 	handleAnswerUpdate={(answer) => { updateAnswer(dbt._id, answer) }}
+							// />
+							return <InputTile key={index} inputValue={dbt.question} onRemove={() => removeDoubt(dbt)} />
 
 						})
 					}
 				</div>
-				<div className='flex flex-col items-start mb-3'>
+				<div className='flex flex-col items-end mb-7'>
 					<textarea className='multiline-input-field w-full'
 						placeholder='Enter Question'
 						onChange={(event) => setNewDoubtInput(event.target.value)}
 						value={newDoubtInput}
 					/>
-					<button className='bg-slate-800 px-3 py-1 mt-2 rounded' onClick={addDoubt}>
+					<button className='btn-primary mt-3 w-full' onClick={addDoubt}>
 						Add Question
 					</button>
 				</div>
-				<div className='font-semibold text-lg'>Comment</div>
+				<div className='font-semibold text-lg mb-2'>Comment</div>
 				<div>
 					{
 						comments.map((cmt, index) => {
@@ -276,12 +298,13 @@ export default function Sidebar() {
 						})
 					}
 				</div>
-				<input placeholder='Enter comment' className='input-field w-full mb-2' value={newCommentInput} onChange={(event) => setNewCommentInput(event.target.value)} />
-				<button className='bg-slate-800 px-3 py-1 mb-3 rounded' onClick={addComment}>
+				<input placeholder='Enter comment' className='input-field w-full' value={newCommentInput} onChange={(event) => setNewCommentInput(event.target.value)} />
+				<button className='btn-primary py-1 mt-3 w-full mb-7' onClick={addComment}>
 					Add comment
 				</button>
 
-				<div className='font-semibold flex items-center mb-4 text-lg'>Point&nbsp;:&nbsp;
+				<div className='font-semibold flex items-center mb-8 text-lg'>
+					Point&nbsp;:&nbsp;
 					<input
 						className='input-field w-14'
 						value={point}

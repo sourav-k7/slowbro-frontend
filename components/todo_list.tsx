@@ -2,7 +2,7 @@ import React from 'react'
 import { BsSortNumericUpAlt } from 'react-icons/bs';
 import useDragDrop from '../hooks/drag_drop_hook';
 import { useAppDispatch, useAppSelector } from '../hooks/redux_hooks'
-import { TaskStatus } from '../model/task';
+import { PriorityType, TaskStatus } from '../model/task';
 import { selectTask, sortPendingTask } from '../redux/task/task';
 import { ListType, SelectTaskPayloadType } from '../redux/task/taskTypes';
 import ToggleTaskList from './layout/toggle_list'
@@ -27,6 +27,7 @@ export default function TodoList() {
 							key={tk._id}
 							id={tk._id}
 							title={tk.task}
+							priority={tk.priority??PriorityType.low}
 							point={tk.point}
 							handleClick={() => dispatch(selectTask({ id: tk._id, type: ListType.pending } as SelectTaskPayloadType))}
 							handleDrag={() => { setDragId(tk._id) }}

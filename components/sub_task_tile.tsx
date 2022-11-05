@@ -16,12 +16,12 @@ export default function SubtaskTile({ title, status,onRemove,bgColor,handleStatu
 		<div className={`${
 			TaskStatus.unstarted==status?bgColor:
 			TaskStatus.started==status?'bg-amber-200 bg-opacity-30':
-			'bg-lime-200 bg-opacity-30 line-through'} 
+			'bg-lime-200 bg-opacity-30'} 
 		relative px-3 py-1 my-1 items-center rounded flex justify-between`}>
 			<AiOutlineClose className='absolute -right-1 -top-1 bg-slate-400 text-slate-900 p-1 rounded-full cursor-pointer' 
 			size={15} onClick={onRemove} />
-			<div>{title}</div>
-			<div className='mr-2'>
+			<div className={`${TaskStatus.completed==status?'line-through':''}`}>{title}</div>
+			<div className='mr-2 w-32'>
 				<DropDownMenu selectedOption={status.toString()} 
 					Options={Object.values(TaskStatus).map(val => val)}
 				 	onOptionClick={(index) => {handleStatusUpdate(Object.values(TaskStatus)[index])}} />

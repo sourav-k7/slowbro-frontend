@@ -3,7 +3,7 @@ import { FaChevronDown } from 'react-icons/fa';
 import { config, useTransition, animated } from 'react-spring';
 
 interface PropType {
-	selectedOption: string,
+	selectedOption: any,
 	Options: string[],
 	onOptionClick: (a: number) => void
 }
@@ -27,7 +27,7 @@ export default function DropDownMenu({ selectedOption, Options, onOptionClick }:
 	}
 
 	return (
-		<button onClick={toggleProjectMenu} className='relative bg-slate-700 w-full rounded flex justify-between items-center px-2 py-1'>
+		<button onClick={toggleProjectMenu} className='relative bg-slate-700 w-full rounded flex justify-between items-center px-2 py-1 '>
 			{selectedOption}
 			<FaChevronDown />
 			{transitions((props: any, item: any) =>

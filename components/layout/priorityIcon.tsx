@@ -5,11 +5,11 @@ import { TbEqual } from 'react-icons/tb';
 function priorityIcon(priority: PriorityType | undefined) {
 	switch (priority) {
 		case PriorityType.high:
-			return <IoIosArrowUp  />
+			return <IoIosArrowUp className='text-red-500' size={22} />
 		case PriorityType.medium:
-			return <TbEqual  />
+			return <TbEqual className='text-blue-400' size={22} />
 		case PriorityType.low:
-			return <IoIosArrowDown />
+			return <IoIosArrowDown className='text-yellow-200' size={22} />
 	}
 }
 

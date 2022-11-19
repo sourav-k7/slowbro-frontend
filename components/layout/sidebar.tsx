@@ -66,7 +66,6 @@ export default function Sidebar() {
 	}
 
 	function updateSubTask(updateTkIndex: number, status: TaskStatus) {
-		console.log(subTask);
 		setSubTask(state=>{
 			let updateState = [...state];
 			updateState[updateTkIndex] ={

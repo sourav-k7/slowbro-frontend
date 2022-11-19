@@ -65,15 +65,16 @@ export default function Sidebar() {
 		setSubTask(state => state.filter(tk => tk.task != rmTask.task))
 	}
 
-	function updateSubTask(updateTkId: string, status: TaskStatus) {
-		setSubTask(state => state.map(tk => {
-			if (tk._id == updateTkId) {
-				let tempSubTk = { ...tk };
-				tempSubTk.status = status;
-				return tempSubTk;
+	function updateSubTask(updateTkIndex: number, status: TaskStatus) {
+		console.log(subTask);
+		setSubTask(state=>{
+			let updateState = [...state];
+			updateState[updateTkIndex] ={
+				...updateState[updateTkIndex],
+				status:status
 			}
-			return tk;
-		}))
+			return updateState;
+		})
 	}
 
 	function addSubTask() {
@@ -244,7 +245,7 @@ export default function Sidebar() {
 								status={tk.status}
 								onRemove={() => removeSubTask(tk)}
 								bgColor={'bg-slate-800'}
-								handleStatusUpdate={(status) => updateSubTask(tk._id, status)}
+								handleStatusUpdate={(status) => updateSubTask(index, status)}
 							/>
 						)
 					}

@@ -319,7 +319,7 @@ export default function Sidebar() {
 								? <button className='btn-primary mr-3' onClick={createNewTask}>Create</button>
 								: <button className='btn-primary mr-3' onClick={handleUpdateTask}>Save</button>
 						}
-						<button>Cancel</button>
+						<button onClick={handleCloseSideBar}>Cancel</button>
 					</div>
 					{task != null && <button
 						className='bg-red-500 text-white py-2 rounded px-3'

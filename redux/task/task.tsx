@@ -1,8 +1,22 @@
 import { createSlice, PayloadAction, ThunkAction } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
-import { Task, TaskStatus } from "../../model/task";
+import { PriorityType, Task, TaskStatus } from "../../model/task";
 import { completeTask, createProject, createTask, deleteTask, getAllPendingTask, getAllPreviouslyCompletedTask, getAllProject, getAllTodayCompletedTask, swapTask, updateTask } from "./taskServices";
 import { ListType, SelectTaskPayloadType, TaskStateType, TaskSwapType } from "./taskTypes";
+
+function calculatePriorityPoint(prty: PriorityType | undefined): number {
+	switch (prty) {
+		case PriorityType.high:
+			return 10;
+		case PriorityType.medium:
+			return 9;
+		case PriorityType.low:
+			return 8;
+		default:
+			return 0
+	}
+}
+
 
 //! reset all new variable to logout reducer
 const initialState: TaskStateType = {
@@ -43,8 +57,16 @@ const taskSlice = createSlice({
 			state.previouslyCompletedTask = state.previouslyCompletedTask.filter(tk => tk._id != action.payload._id);
 			state.pendingTasks.push(action.payload);
 		},
-		sortPendingTask: (state) => {
+		pointSortPendingTask: (state) => {
 			state.pendingTasks = state.pendingTasks.sort((t1, t2) => t2.point - t1.point);
+		},
+		prioritySortPendingTask: (state) => {
+			state.pendingTasks = state.pendingTasks.sort((t1, t2) => {
+
+				let t1RankPoint: number = calculatePriorityPoint(t1.priority);
+				let t2RankPoint: number = calculatePriorityPoint(t2.priority);
+				return t2RankPoint-t1RankPoint;
+			})
 		}
 	},
 	extraReducers: builder => {
@@ -199,4 +221,4 @@ const taskSlice = createSlice({
 })
 
 export default taskSlice.reducer;
-export const { selectTask, selectProject, closeSidebar, markAsUncompleteTask, sortPendingTask } = taskSlice.actions;
+export const { selectTask, selectProject, closeSidebar, markAsUncompleteTask, pointSortPendingTask,prioritySortPendingTask } = taskSlice.actions;

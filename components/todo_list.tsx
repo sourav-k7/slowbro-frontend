@@ -1,11 +1,13 @@
 import React from 'react'
+import { BiSortDown } from 'react-icons/bi';
 import { BsSortNumericUpAlt } from 'react-icons/bs';
 import useDragDrop from '../hooks/drag_drop_hook';
 import { useAppDispatch, useAppSelector } from '../hooks/redux_hooks'
 import { PriorityType, TaskStatus } from '../model/task';
-import { selectTask, sortPendingTask } from '../redux/task/task';
+import { selectTask, pointSortPendingTask, prioritySortPendingTask } from '../redux/task/task';
 import { ListType, SelectTaskPayloadType } from '../redux/task/taskTypes';
 import ToggleTaskList from './layout/toggle_list'
+import Tooltip from './layout/tooltip';
 import TaskTitleTile from './task_title_tile';
 
 export default function TodoList() {
@@ -15,11 +17,20 @@ export default function TodoList() {
 	const selectedProject = useAppSelector(state => state.task.selectedProject);
 
 	return (
-		<div className='relative'>
+		<div className='relative '>
+			<Tooltip content='Sort by priority'>
+				<BiSortDown
+				className='absolute right-20 top-4 cursor-pointer'
+				onClick={()=>dispatch(prioritySortPendingTask())}
+				size={26}
+				/>
+			</Tooltip>
+			<Tooltip content='Sort by point'>
 			<BsSortNumericUpAlt
 				className='absolute right-10 top-4 cursor-pointer'
-				onClick={() => dispatch(sortPendingTask())}
+				onClick={() => dispatch(pointSortPendingTask())}
 				size={26} />
+			</Tooltip>
 			<ToggleTaskList title={'Todo'}>
 				{task.filter(tk => tk.project == selectedProject?._id)
 					.map((tk) => (

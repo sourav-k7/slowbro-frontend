@@ -8,6 +8,7 @@ import { selectTask } from '../redux/task/task';
 import { completeTask, updateTask } from '../redux/task/taskServices';
 import { ListType, SelectTaskPayloadType } from '../redux/task/taskTypes';
 import DropDownMenu from './layout/drop_down_menu';
+import priorityIcon from './layout/priorityIcon';
 import QuestionTile from './layout/question_tile';
 import SubtaskTile from './sub_task_tile';
 
@@ -127,6 +128,11 @@ export default function ActiveTile({ task }: PropType) {
 					Options={Object.values(TaskStatus).map(val => val)}
 					onOptionClick={updateStatus} />
 			</div>
+			<div className='font-semibold mb-3 flex items-center'>
+				Points : {task.point} &#128293;
+				&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+				Priority: &ensp; {priorityIcon(task.priority)}  {task.priority} 
+				</div>
 			<div className='font-semibold '>Description</div>
 			<div className='bg-slate-700 mb-3 p-3 rounded'>{task.description!=''?task.description:"No description"}</div>
 			{/* <div>Image</div> */}
@@ -147,7 +153,7 @@ export default function ActiveTile({ task }: PropType) {
 				}
 			</div>
 
-			<div className='font-semibold mb-3'>Points : {task.point} &#128293;</div>
+			
 			<div className='font-semibold'>Doubt</div>
 			<div className='bg-slate-700 mb-3 p-3 rounded'>
 				{

@@ -20,7 +20,8 @@ export default function ToggleTaskList({
 
 	const toggleWrapperAnimatedStyle = useSpring({ transform: !isExpanded ? 'rotate(0deg)' : 'rotate(180deg)' })
 	const contentAnimatedStyle = useSpring({
-		height: isExpanded ? bounds.height : 0
+		height: isExpanded ? bounds.height : 0,
+		
 	})
 
 	return (

@@ -139,34 +139,34 @@ const taskSlice = createSlice({
 				state.loading = false;
 				toast.error(action.error.message ?? "Something went wrong while updating new project");
 			})
-			.addCase(swapTask.pending, (state, { meta }) => {
-				const dragId = meta.arg.dragTaskId;
-				const dropId = meta.arg.dropTaskId;
-				const listType = meta.arg.type;
-				let swapList: Task[] = [];
-				if (listType == ListType.pending) {
-					swapList = state.pendingTasks;
-				}
-				else if (listType == ListType.today) {
-					swapList = state.todayCompleted;
-				}
-				else {
-					swapList = state.previouslyCompletedTask;
-				}
-				let drapIndex = swapList.findIndex(tk => tk._id == dragId);
-				let dropIndex = swapList.findIndex(tk => tk._id == dropId);
-				const type = meta.arg.type;
-				if (type == ListType.pending) {
-					[state.pendingTasks[drapIndex], state.pendingTasks[dropIndex]] = [state.pendingTasks[dropIndex], state.pendingTasks[drapIndex]];
-				}
-				else if (type == ListType.today) {
-					[state.todayCompleted[drapIndex], state.todayCompleted[dropIndex]] = [state.todayCompleted[dropIndex], state.todayCompleted[drapIndex]];
-				}
-				else {
-					[state.previouslyCompletedTask[drapIndex], state.previouslyCompletedTask[dropIndex]] = [state.previouslyCompletedTask[dropIndex], state.previouslyCompletedTask[drapIndex]];
-				}
+			// .addCase(swapTask.pending, (state, { meta }) => {
+			// 	const dragId = meta.arg.dragTaskId;
+			// 	const dropId = meta.arg.dropTaskId;
+			// 	const listType = meta.arg.type;
+			// 	let swapList: Task[] = [];
+			// 	if (listType == ListType.pending) {
+			// 		swapList = state.pendingTasks;
+			// 	}
+			// 	else if (listType == ListType.today) {
+			// 		swapList = state.todayCompleted;
+			// 	}
+			// 	else {
+			// 		swapList = state.previouslyCompletedTask;
+			// 	}
+			// 	let drapIndex = swapList.findIndex(tk => tk._id == dragId);
+			// 	let dropIndex = swapList.findIndex(tk => tk._id == dropId);
+			// 	const type = meta.arg.type;
+			// 	if (type == ListType.pending) {
+			// 		[state.pendingTasks[drapIndex], state.pendingTasks[dropIndex]] = [state.pendingTasks[dropIndex], state.pendingTasks[drapIndex]];
+			// 	}
+			// 	else if (type == ListType.today) {
+			// 		[state.todayCompleted[drapIndex], state.todayCompleted[dropIndex]] = [state.todayCompleted[dropIndex], state.todayCompleted[drapIndex]];
+			// 	}
+			// 	else {
+			// 		[state.previouslyCompletedTask[drapIndex], state.previouslyCompletedTask[dropIndex]] = [state.previouslyCompletedTask[dropIndex], state.previouslyCompletedTask[drapIndex]];
+			// 	}
 
-			})
+			// })
 			.addCase(getAllTodayCompletedTask.pending, (state) => {
 				state.loading = true;
 			})

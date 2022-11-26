@@ -34,7 +34,8 @@ const userSlice = createSlice({
 		localStorage.setItem('slowbro-token',action.payload.token);
 		})
 		.addCase(loginRequest.rejected,(state,action)=>{
-			toast.error(action.error.message??"Something went wrong while sign in");
+			toast.error(action.payload?.message??"Login failed");
+			// toast.error(action.error.message??"Something went wrong while sign in");
 			state.loading = false;
 		})
 		.addCase(registrationRequest.pending,(state)=>{

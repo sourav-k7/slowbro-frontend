@@ -26,10 +26,10 @@ export default function Home() {
 	const dispatch = useAppDispatch();
 	const [isProjectModalVisible, setIsProjectModelVisible] = useState(false);
 	const [newProjectName, setNewProjectName] = useState('');
-	const selectedProject = useAppSelector(state=>state.task.selectedProject);
-	const projects = useAppSelector(state=>state.task.projects);
-	const pendingTask = useAppSelector(state=>state.task.pendingTasks);
-	let activeTask = pendingTask.filter(tk=>tk.project==selectedProject?._id && tk.status == TaskStatus.started);
+	const selectedProject = useAppSelector(state => state.task.selectedProject);
+	const projects = useAppSelector(state => state.task.projects);
+	const pendingTask = useAppSelector(state => state.task.pendingTasks);
+	let activeTask = pendingTask.filter(tk => tk.project == selectedProject?._id && tk.status == TaskStatus.started);
 
 	useEffect(() => {
 		dispatch<any>(getAllProject());
@@ -45,7 +45,7 @@ export default function Home() {
 		}
 	}, [router])
 
-	
+
 
 
 
@@ -69,13 +69,13 @@ export default function Home() {
 	}
 
 	return (
-		<div  className='overflow-x-hidden min-h-screen flex scroll'>
+		<div className='overflow-x-hidden min-h-screen flex scroll'>
 			<div className={`w-1/2 m-auto mt-3 relative `}>
-			<div className='absolute right-1 top-3'>
-				<button onClick={onLogout}>
-					<FiLogOut size={30} />
-				</button>
-			</div>
+				<div className='absolute right-1 top-3'>
+					<button onClick={onLogout}>
+						<FiLogOut size={30} />
+					</button>
+				</div>
 				<div className='flex  justify-center mb-7 gap-3 items-end'>
 					<Image src={bugImage} width='100' height={100} alt='bug.png' />
 					<div className=''>
@@ -95,25 +95,32 @@ export default function Home() {
 						</div>
 					</div>
 				</div>
-				<TodayCompletedTaskList />
-				<div className='flex justify-between items-center mb-2'>
-					<div className='font-bold text-lg'>Active Task</div>
-					<button className='btn-primary flex items-center' 
-					onClick={()=>{
-						dispatch(selectTask({id:null,type:ListType.pending}));
-						}}  >
-						Add new task &nbsp; <BsPlus size={20} />
-					</button>
-				</div>
 				{
-					activeTask.length==0?
-					<div className='bg-slate-800 p-3 rounded'>
-						No Active Task
+					projects.length > 0 ? <div>
+						<TodayCompletedTaskList />
+						<div className='flex justify-between items-center mb-2'>
+							<div className='font-bold text-lg'>Active Task</div>
+							<button className='btn-primary flex items-center'
+								onClick={() => {
+									dispatch(selectTask({ id: null, type: ListType.pending }));
+								}}  >
+								Add new task &nbsp; <BsPlus size={20} />
+							</button>
+						</div>
+						{
+							activeTask.length == 0 ?
+								<div className='bg-slate-800 p-3 rounded'>
+									No Active Task
+								</div>
+								: activeTask.map(tk => <ActiveTile key={tk._id} task={tk} />)
+						}
+						<TodoList />
+						<PreviouslyCompletedTask />
 					</div>
-:					activeTask.map(tk=><ActiveTile key={tk._id} task={tk} />)
+						: <div className='bg-slate-800 p-3 rounded'>
+							No project created
+						</div>
 				}
-				<TodoList />
-				<PreviouslyCompletedTask />
 			</div>
 			<Sidebar />
 

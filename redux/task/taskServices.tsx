@@ -16,6 +16,11 @@ export const getAllProject = createAsyncThunk('task/allProject', async () => {
 	return res.data.data;
 })
 
+export const deleteProject = createAsyncThunk('task/deleteProject',async ({id}:{id:string})=>{
+	const res = await axios.post(ApiConstants.deleteProject,{projectId:id});
+	return id;
+})
+
 export const getAllPendingTask = createAsyncThunk('task/allPendingTask', async () => {
 	const res = await axios.get(ApiConstants.getAllPendingTask);
 	return res.data.data;

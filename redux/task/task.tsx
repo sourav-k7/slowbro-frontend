@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, ThunkAction } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import { PriorityType, Task, TaskStatus } from "../../model/task";
-import { completeTask, createProject, createTask, deleteTask, getAllPendingTask, getAllPreviouslyCompletedTask, getAllProject, getAllTodayCompletedTask, swapTask, updateTask } from "./taskServices";
+import { completeTask, createProject, createTask, deleteProject, deleteTask, getAllPendingTask, getAllPreviouslyCompletedTask, getAllProject, getAllTodayCompletedTask, swapTask, updateTask } from "./taskServices";
 import { ListType, SelectTaskPayloadType, TaskStateType, TaskSwapType } from "./taskTypes";
 
 function calculatePriorityPoint(prty: PriorityType | undefined): number {
@@ -214,6 +214,19 @@ const taskSlice = createSlice({
 
 			})
 			.addCase(deleteTask.rejected, (state, action) => {
+				state.loading = false;
+				toast.error(action.error.message ?? "Something went wrong while deleting task");
+			})
+			.addCase(deleteProject.pending,(state)=>{
+				state.loading = true;
+			})
+			.addCase(deleteProject.fulfilled,(state,action)=>{
+				state.loading = false;
+				state.projects = state.projects.filter(prj=> prj._id !=action.payload);
+				state.selectedProject = state.projects[0]??null;
+				toast.success("Project deleted");
+			})
+			.addCase(deleteProject.rejected,(state,action)=>{
 				state.loading = false;
 				toast.error(action.error.message ?? "Something went wrong while deleting task");
 			})

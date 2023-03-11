@@ -9,8 +9,9 @@ import { FiLogOut } from 'react-icons/fi';
 import { useAppDispatch, useAppSelector } from '../hooks/redux_hooks';
 import { logout } from '../redux/user/user';
 import { BsPlus } from 'react-icons/bs';
+import { RiDeleteBin5Line } from 'react-icons/ri';
 import Modal from '../components/layout/modal';
-import { createProject, getAllProject, getAllPendingTask } from '../redux/task/taskServices';
+import { createProject, getAllProject, getAllPendingTask, deleteProject } from '../redux/task/taskServices';
 import { ListType } from '../redux/task/taskTypes';
 import TodoList from '../components/todo_list';
 import { selectProject, selectTask } from '../redux/task/task';
@@ -25,6 +26,7 @@ export default function Home() {
 	const [loading, setLoading] = useState(true);
 	const dispatch = useAppDispatch();
 	const [isProjectModalVisible, setIsProjectModelVisible] = useState(false);
+	const [isDeleteProjectModelVisible,setIsDeleteProjectModelVisible] = useState(false) ;
 	const [newProjectName, setNewProjectName] = useState('');
 	const selectedProject = useAppSelector(state => state.task.selectedProject);
 	const projects = useAppSelector(state => state.task.projects);
@@ -57,6 +59,15 @@ export default function Home() {
 
 	function toggleNewProjectModalVisibility() {
 		setIsProjectModelVisible(state => !state);
+	}
+
+	function toggleDeleteProjectModelVisibility(){
+		setIsDeleteProjectModelVisible(state=>!state);
+	}
+
+	function onDeleteProject(){
+		dispatch<any>(deleteProject({ id: selectedProject!._id }))
+		toggleDeleteProjectModelVisibility();
 	}
 
 	function onCreateNewProject() {
@@ -92,6 +103,15 @@ export default function Home() {
 								onClick={toggleNewProjectModalVisibility}>
 								{projects.length == 0 && <span>Add Project</span>}	<BsPlus size={30} />
 							</button>
+							{
+								projects.length > 0 && <button
+									className={`bg-slate-700 rounded items-center justify-center p-1`}
+									onClick={toggleDeleteProjectModelVisibility}
+								>
+									<RiDeleteBin5Line size={23} />
+								</button>
+
+							}
 						</div>
 					</div>
 				</div>
@@ -134,6 +154,18 @@ export default function Home() {
 					<div>
 						<button className='btn-primary mr-3' onClick={onCreateNewProject}>Create</button>
 						<button onClick={toggleNewProjectModalVisibility}>cancel</button>
+					</div>
+				</div>
+			</Modal>}
+			{isDeleteProjectModelVisible && <Modal
+			isVisible={isDeleteProjectModelVisible}
+				onClose={toggleDeleteProjectModelVisibility}
+			>
+				<div className='w-80'>
+					<div className='mb-6'>Are you sure you want to delete {selectedProject!.name} project</div>
+					<div>
+						<button className='!bg-red-500 btn-primary mr-3 ' onClick={onDeleteProject}>Delete</button>
+						<button onClick={toggleDeleteProjectModelVisibility}>cancel</button>
 					</div>
 				</div>
 			</Modal>}

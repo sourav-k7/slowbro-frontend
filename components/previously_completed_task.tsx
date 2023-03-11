@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect } from 'react'
 import useDragDrop from '../hooks/drag_drop_hook'
 import { useAppDispatch, useAppSelector } from '../hooks/redux_hooks';
 import { selectTask } from '../redux/task/task';

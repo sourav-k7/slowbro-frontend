@@ -47,10 +47,6 @@ export default function Home() {
 		}
 	}, [router])
 
-
-
-
-
 	async function onLogout() {
 		await dispatch<any>(logout());
 		localStorage.removeItem('slowbro-token');

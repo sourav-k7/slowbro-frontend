@@ -307,8 +307,17 @@ export default function Sidebar() {
 					Point&nbsp;:&nbsp;
 					<input
 						className='input-field w-14'
+						type='text'
+						pattern="[0-9]*"
 						value={point}
-						onChange={(event) => setPoint(+event.target.value)}
+						onChange={(event) =>{
+							if(event.target.validity.valid){
+								setPoint(+event.target.value)
+							}
+							else{
+								setPoint(0);
+							}
+						}}
 					/>
 				</div>
 

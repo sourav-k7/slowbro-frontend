@@ -66,11 +66,11 @@ export default function Sidebar() {
 	}
 
 	function updateSubTask(updateTkIndex: number, status: TaskStatus) {
-		setSubTask(state=>{
+		setSubTask(state => {
 			let updateState = [...state];
-			updateState[updateTkIndex] ={
+			updateState[updateTkIndex] = {
 				...updateState[updateTkIndex],
-				status:status
+				status: status
 			}
 			return updateState;
 		})
@@ -199,7 +199,7 @@ export default function Sidebar() {
 		handleCloseSideBar();
 	}
 
-	
+
 
 	return (
 		<animated.div style={sidebarStyle} className={`overflow-x-auto relative`}>
@@ -227,9 +227,9 @@ export default function Sidebar() {
 					<div className='flex items-center'>
 						<span className='font-semibold'>Priority&nbsp;:&nbsp;</span>
 						<DropDownMenu selectedOption={
-						<span className='flex items-center'>
-							{priorityIcon(priority)}&ensp;{priority}</span>
-					}
+							<span className='flex items-center'>
+								{priorityIcon(priority)}&ensp;{priority}</span>
+						}
 							Options={Object.values(PriorityType)}
 							onOptionClick={(index) => { setPriority(Object.values(PriorityType)[index]) }} />
 					</div>
@@ -310,11 +310,11 @@ export default function Sidebar() {
 						type='text'
 						pattern="[0-9]*"
 						value={point}
-						onChange={(event) =>{
-							if(event.target.validity.valid){
+						onChange={(event) => {
+							if (event.target.validity.valid) {
 								setPoint(+event.target.value)
 							}
-							else{
+							else {
 								setPoint(0);
 							}
 						}}

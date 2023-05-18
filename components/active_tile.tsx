@@ -44,11 +44,12 @@ export default function ActiveTile({ task }: PropType) {
 	}
 
 	function removeSubTask(rmTask: Subtask) {
+		console.log(rmTask);
+		console.log(subTask);
 		let latestSubtask: Subtask[] = [];
-		setSubTask(state => {
-			latestSubtask = state.filter(tk => tk.task != rmTask.task)
-			return latestSubtask;
-		})
+		latestSubtask = subTask.filter(tk => tk._id != rmTask._id)
+
+		setSubTask(latestSubtask);
 		handleUpdateTask('subtask', latestSubtask);
 	}
 
@@ -131,10 +132,10 @@ export default function ActiveTile({ task }: PropType) {
 			<div className='font-semibold mb-3 flex items-center'>
 				Points : {task.point} &#128293;
 				&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-				Priority: &ensp; {priorityIcon(task.priority)}  {task.priority} 
-				</div>
+				Priority: &ensp; {priorityIcon(task.priority)}  {task.priority}
+			</div>
 			<div className='font-semibold '>Description</div>
-			<div className='bg-slate-700 mb-3 p-3 rounded'>{task.description!=''?task.description:"No description"}</div>
+			<div className='bg-slate-700 mb-3 p-3 rounded'>{task.description != '' ? task.description : "No description"}</div>
 			{/* <div>Image</div> */}
 			<div className='font-semibold'>SubTask</div>
 			<div className='bg-slate-700 p-3 rounded mb-3'>
@@ -153,7 +154,7 @@ export default function ActiveTile({ task }: PropType) {
 				}
 			</div>
 
-			
+
 			<div className='font-semibold'>Doubt</div>
 			<div className='bg-slate-700 mb-3 p-3 rounded'>
 				{

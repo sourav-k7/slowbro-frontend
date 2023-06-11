@@ -30,7 +30,12 @@ export default function Sidebar() {
 	const project = useAppSelector(state => state.task.selectedProject);
 
 	if (typeof window !== 'undefined') {
-		sidebarWidth = (2 * window.innerWidth) / 5;
+		if(window.innerWidth>=768){
+			sidebarWidth = (2 * window.innerWidth) / 5;
+		}
+		else{
+			sidebarWidth = window.innerWidth;
+		}
 	}
 
 	const sidebarStyle = useSpring({
@@ -202,8 +207,8 @@ export default function Sidebar() {
 
 
 	return (
-		<animated.div style={sidebarStyle} className={`overflow-x-auto relative`}>
-			<div className='h-full fixed w-2/5 overflow-y-auto bg-gray-900 py-3 px-5 no-scrollbar'>
+		<animated.div style={sidebarStyle} className={`overflow-x-auto fixed md:static ${isSidebarOpen?'':'hidden md:inline'}`}>
+			<div className='h-full  fixed w-full md:w-2/5 overflow-y-auto bg-gray-900 py-3 px-5 no-scrollbar'>
 				<div>
 					<AiOutlineClose color='white' size={25} className="ml-auto mr-0 cursor-pointer" onClick={handleCloseSideBar} />
 				</div>
@@ -217,7 +222,7 @@ export default function Sidebar() {
 					value={description}
 				/>
 
-				<div className='grid grid-cols-2 gap-4 items-center mb-7 text-lg'>
+				<div className='grid grid-cols-1 md:grid-cols-2 gap-7 md:gap-4 items-center mb-7 text-lg'>
 					<div className='flex items-center'>
 						<span className='font-semibold'>Status&nbsp;:&nbsp;</span>
 						<DropDownMenu selectedOption={status?.toString()}
@@ -306,7 +311,7 @@ export default function Sidebar() {
 				<div className='font-semibold flex items-center mb-8 text-lg'>
 					Point&nbsp;:&nbsp;
 					<input
-						className='input-field w-14'
+						className='input-field w-1/2 md:w-14'
 						type='text'
 						pattern="[0-9]*"
 						value={point}
@@ -348,7 +353,7 @@ function InputTile({ inputValue, onRemove }: { inputValue: string, onRemove: () 
 	return (
 		<div className={`py-2 px-2 bg-slate-800 my-1 rounded flex justify-between items-center`}>
 			{inputValue}
-			<AiOutlineClose className='cursor-pointer' onClick={onRemove} />
+			<AiOutlineClose size={20} className='cursor-pointer' onClick={onRemove} />
 		</div>
 	)
 }

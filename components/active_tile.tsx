@@ -44,8 +44,6 @@ export default function ActiveTile({ task }: PropType) {
 	}
 
 	function removeSubTask(rmTask: Subtask) {
-		console.log(rmTask);
-		console.log(subTask);
 		let latestSubtask: Subtask[] = [];
 		latestSubtask = subTask.filter(tk => tk._id != rmTask._id)
 
@@ -123,16 +121,19 @@ export default function ActiveTile({ task }: PropType) {
 					onClick={() => dispatch(selectTask({ id: task._id, type: ListType.pending } as SelectTaskPayloadType))} />
 			</div>
 			<div className='text-gray-400 mb-3'>{selectedProject?.name}</div>
-			<div className='mb-3 w-32'>
+			<div className='mb-3 w-full md:w-32'>
 				<DropDownMenu
 					selectedOption={task.status}
 					Options={Object.values(TaskStatus).map(val => val)}
 					onOptionClick={updateStatus} />
 			</div>
-			<div className='font-semibold mb-3 flex items-center'>
-				Points : {task.point} &#128293;
-				&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-				Priority: &ensp; {priorityIcon(task.priority)}  {task.priority}
+			<div className='font-semibold mb-3'>
+				<span>
+					Points : {task.point} &#128293;
+				</span>
+ 				<span>
+					Priority: &ensp; {priorityIcon(task.priority)}  {task.priority}
+				</span>
 			</div>
 			<div className='font-semibold '>Description</div>
 			<div className='bg-slate-700 mb-3 p-3 rounded'>{task.description != '' ? task.description : "No description"}</div>

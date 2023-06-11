@@ -26,7 +26,7 @@ export default function Home() {
 	const [loading, setLoading] = useState(true);
 	const dispatch = useAppDispatch();
 	const [isProjectModalVisible, setIsProjectModelVisible] = useState(false);
-	const [isDeleteProjectModelVisible,setIsDeleteProjectModelVisible] = useState(false) ;
+	const [isDeleteProjectModelVisible, setIsDeleteProjectModelVisible] = useState(false);
 	const [newProjectName, setNewProjectName] = useState('');
 	const selectedProject = useAppSelector(state => state.task.selectedProject);
 	const projects = useAppSelector(state => state.task.projects);
@@ -57,11 +57,11 @@ export default function Home() {
 		setIsProjectModelVisible(state => !state);
 	}
 
-	function toggleDeleteProjectModelVisibility(){
-		setIsDeleteProjectModelVisible(state=>!state);
+	function toggleDeleteProjectModelVisibility() {
+		setIsDeleteProjectModelVisible(state => !state);
 	}
 
-	function onDeleteProject(){
+	function onDeleteProject() {
 		dispatch<any>(deleteProject({ id: selectedProject!._id }))
 		toggleDeleteProjectModelVisibility();
 	}
@@ -76,17 +76,19 @@ export default function Home() {
 	}
 
 	return (
-		<div className='overflow-x-hidden min-h-screen flex scroll'>
-			<div className={`w-1/2 m-auto mt-3 relative `}>
-				<div className='absolute right-1 top-3'>
+		<div className='overflow-x-hidden min-h-screen flex scroll relative'>
+			<div className={`px-3 md:px-0 w-full md:w-1/2 m-auto mt-3 relative `}>
+				<div className='absolute right-6 md:right-1 top-3'>
 					<button onClick={onLogout}>
 						<FiLogOut size={30} />
 					</button>
 				</div>
-				<div className='flex  justify-center mb-7 gap-3 items-end'>
-					<Image src={bugImage} width='100' height={100} alt='bug.png' />
-					<div className=''>
-						<h1 className='text-6xl font-bold '>Tasks</h1>
+				<div className='flex flex-col md:flex-row items-center justify-center mb-7 md:gap-3 '>
+					<div>
+						<Image src={bugImage} width='100' height={100} alt='bug.png' />
+					</div>
+					<div>
+						<h1 className='text-center text-5xl md:text-6xl font-bold '>Tasks</h1>
 						<div className='flex items-center gap-1'>
 							{projects.length > 0 &&
 								<DropDownMenu
@@ -120,7 +122,10 @@ export default function Home() {
 								onClick={() => {
 									dispatch(selectTask({ id: null, type: ListType.pending }));
 								}}  >
-								Add new task &nbsp; <BsPlus size={20} />
+									<span className='hidden md:inline'>
+									Add new task  &nbsp;
+									</span>
+								 <BsPlus size={20} />
 							</button>
 						</div>
 						{
@@ -154,7 +159,7 @@ export default function Home() {
 				</div>
 			</Modal>}
 			{isDeleteProjectModelVisible && <Modal
-			isVisible={isDeleteProjectModelVisible}
+				isVisible={isDeleteProjectModelVisible}
 				onClose={toggleDeleteProjectModelVisibility}
 			>
 				<div className='w-80'>

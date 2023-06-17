@@ -32,6 +32,7 @@ export default function Home() {
 	const projects = useAppSelector(state => state.task.projects);
 	const pendingTask = useAppSelector(state => state.task.pendingTasks);
 	let activeTask = pendingTask.filter(tk => tk.project == selectedProject?._id && tk.status == TaskStatus.started);
+	const isSidebarOpen = useAppSelector(state => state.task.isSidebarOpen);
 
 	useEffect(() => {
 		dispatch<any>(getAllProject());
@@ -76,8 +77,10 @@ export default function Home() {
 	}
 
 	return (
-		<div className='overflow-x-hidden min-h-screen flex scroll relative'>
-			<div className={`px-3 md:px-0 w-full md:w-1/2 m-auto mt-3 relative `}>
+		<div className='overflow-x-hidden min-h-screen flex scroll relative '>
+			<div className={`px-3 md:px-0 w-full md:w-1/2 m-auto mt-3 relative duration-500 ease-in-out
+			${isSidebarOpen ? "md:-translate-x-[40%]" : ""}
+			`}>
 				<div className='absolute right-6 md:right-1 top-3'>
 					<button onClick={onLogout}>
 						<FiLogOut size={30} />
@@ -149,7 +152,7 @@ export default function Home() {
 				isVisible={isProjectModalVisible}
 				onClose={toggleNewProjectModalVisibility}
 			>
-				<div className='w-80'>
+				<div className='w-full'>
 					<div>Project name</div>
 					<input className='input-field mb-3 w-full' onChange={(event) => { setNewProjectName(event.target.value) }} />
 					<div>

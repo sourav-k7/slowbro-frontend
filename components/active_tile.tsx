@@ -51,19 +51,23 @@ export default function ActiveTile({ task }: PropType) {
 		handleUpdateTask('subtask', latestSubtask);
 	}
 
+	function removeComment(rmComment: string) {
+		let latestSubtask: string[] = [];
+		latestSubtask = task.comments.filter(comment => comment != rmComment)
+		handleUpdateTask('comments', latestSubtask);
+	}
+
 	function updateSubTask(updateTkId: string, updatedStatus: TaskStatus) {
 		let latestSubtask: Subtask[] = [];
-		setSubTask(state => {
-			latestSubtask = state.map(tk => {
-				if (tk._id == updateTkId) {
-					let tempSubTk = { ...tk };
-					tempSubTk.status = updatedStatus;
-					return tempSubTk;
-				}
-				return tk;
-			})
-			return latestSubtask;
+		latestSubtask = subTask.map(tk => {
+			if (tk._id == updateTkId) {
+				let tempSubTk = { ...tk };
+				tempSubTk.status = updatedStatus;
+				return tempSubTk;
+			}
+			return tk;
 		})
+		setSubTask(latestSubtask);
 		handleUpdateTask('subtask', latestSubtask);
 	}
 
@@ -83,27 +87,22 @@ export default function ActiveTile({ task }: PropType) {
 
 	function removeDoubt(rmDomain: Doubt) {
 		let latestState: Doubt[] = [];
-		setDoubt(state => {
-			latestState = state.filter(dbt => dbt._id != rmDomain._id)
-			return latestState;
-		})
+		latestState = doubt.filter(dbt => dbt._id != rmDomain._id)
+		setDoubt(latestState)
 		handleUpdateTask('doubt', latestState);
 	}
 
 	function updateAnswer(questionId: string, answer: string) {
 		let latestState: Doubt[] = [];
-		setDoubt(state => {
-
-			latestState = state.map(quest => {
-				if (quest._id == questionId) {
-					const tempQuestion = { ...quest };
-					tempQuestion.answer = answer;
-					return tempQuestion;
-				}
-				return quest;
-			})
-			return latestState;
+		latestState = doubt.map(quest => {
+			if (quest._id == questionId) {
+				const tempQuestion = { ...quest };
+				tempQuestion.answer = answer;
+				return tempQuestion;
+			}
+			return quest;
 		})
+		setDoubt(latestState);
 		handleUpdateTask('doubt', latestState);
 	}
 
@@ -127,11 +126,11 @@ export default function ActiveTile({ task }: PropType) {
 					Options={Object.values(TaskStatus).map(val => val)}
 					onOptionClick={updateStatus} />
 			</div>
-			<div className='font-semibold mb-3'>
+			<div className='font-semibold mb-3 grid grid-cols-2'>
 				<span>
 					Points : {task.point} &#128293;
 				</span>
- 				<span>
+				<span className='flex'>
 					Priority: &ensp; {priorityIcon(task.priority)}  {task.priority}
 				</span>
 			</div>
@@ -181,9 +180,10 @@ export default function ActiveTile({ task }: PropType) {
 						"No comments" :
 						task.comments.map((comment, index) => {
 							return (
-								<div key={index} className={`py-2 px-2 bg-slate-800 my-1 rounded flex justify-between items-center`}>
+								<div key={index} className={`py-2 px-2 bg-slate-800 my-1 rounded flex justify-between items-center relative`}>
 									{comment}
-									<AiOutlineClose className='cursor-pointer' onClick={() => { }} />
+									<AiOutlineClose className='absolute -right-1 -top-1 bg-slate-400 text-slate-900 p-1 rounded-full cursor-pointer'
+										size={15} onClick={() => removeComment(comment)} />
 								</div>
 
 							)

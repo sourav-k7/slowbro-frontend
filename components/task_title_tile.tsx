@@ -17,7 +17,7 @@ export default function TaskTitleTile({ title, id, priority, point, handleClick,
 	return (
 
 		<div
-			className={`${bgColor} p-3 my-1 rounded-md cursor-pointer flex justify-between items-center `}
+			className={`${bgColor} p-3 my-1 rounded-md cursor-pointer flex flex-col lg:flex-row  justify-between items-start lg:items-center `}
 			draggable={true}
 			id={id}
 			onDragOver={(ev) => ev.preventDefault()}
@@ -26,7 +26,7 @@ export default function TaskTitleTile({ title, id, priority, point, handleClick,
 			onClick={handleClick}
 		>
 			<div>{title}</div>
-			<div className='font-semibold flex items-center w-20 justify-between'>
+			<div className='font-semibold flex items-center w-20 justify-between self-end lg:self-start min-w-[5rem]'>
 				{priority && <div>
 					{priorityIcon(priority)}
 				</div>}

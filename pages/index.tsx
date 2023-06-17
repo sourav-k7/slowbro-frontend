@@ -42,7 +42,7 @@ async function onLogin() {
 
   return (
     <div >
-      <div className='w-1/4 m-auto pt-32'>
+      <div className='w-full px-3 md:px-0 md:w-1/4 m-auto pt-32'>
         <div className='text-primary text-3xl font-semibold text-center mb-5'>Login</div>
         <div className='text-body mb-1'>Email</div>
         <input className='input-field mb-3 w-full' onChange={(element)=>setEmail(element.target.value)} />

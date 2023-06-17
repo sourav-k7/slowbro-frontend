@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { animated, useSpring } from 'react-spring'
+// import { animated, useSpring } from 'react-spring'
 import { AiOutlineClose } from 'react-icons/ai';
 import { Task, Subtask, Doubt, TaskStatus, PriorityType } from '../../model/task';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux_hooks';
@@ -14,7 +14,7 @@ export default function Sidebar() {
 	const dispatch = useAppDispatch();
 	const isSidebarOpen = useAppSelector(state => state.task.isSidebarOpen);
 	const task = useAppSelector(state => state.task.selectedTask);
-	let sidebarWidth = 300;
+	// let sidebarWidth = 300;
 	const [name, setName] = useState('');
 	const [description, setDescription] = useState('');
 	const [status, setStatus] = useState<TaskStatus>(TaskStatus.unstarted);
@@ -29,18 +29,18 @@ export default function Sidebar() {
 	const [newCommentInput, setNewCommentInput] = useState('');
 	const project = useAppSelector(state => state.task.selectedProject);
 
-	if (typeof window !== 'undefined') {
-		if(window.innerWidth>=768){
-			sidebarWidth = (2 * window.innerWidth) / 5;
-		}
-		else{
-			sidebarWidth = window.innerWidth;
-		}
-	}
+	// if (typeof window !== 'undefined') {
+	// 	if (window.innerWidth >= 768) {
+	// 		sidebarWidth = (2 * window.innerWidth) / 5;
+	// 	}
+	// 	else {
+	// 		sidebarWidth = window.innerWidth;
+	// 	}
+	// }
 
-	const sidebarStyle = useSpring({
-		width: isSidebarOpen ? sidebarWidth : 0
-	});
+	// const sidebarStyle = useSpring({
+	// 	width: isSidebarOpen ? sidebarWidth : 0
+	// });
 
 	useEffect(() => {
 		if (task != null) {
@@ -207,10 +207,15 @@ export default function Sidebar() {
 
 
 	return (
-		<animated.div style={sidebarStyle} className={`overflow-x-auto fixed md:static ${isSidebarOpen?'':'hidden md:inline'}`}>
-			<div className='h-full  fixed w-full md:w-2/5 overflow-y-auto bg-gray-900 py-3 px-5 no-scrollbar'>
+		<div className={`fixed right-0 top-0 ease-in-out duration-500 overflow-y-scroll h-full
+		${isSidebarOpen ? "translate-x-0 w-full md:w-2/5 " : "translate-x-full w-0"}`}>
+			<div className=' w-full ease-in-out duration-700  bg-gray-900 py-3 px-5 no-scrollbar'>
 				<div>
-					<AiOutlineClose color='white' size={25} className="ml-auto mr-0 cursor-pointer" onClick={handleCloseSideBar} />
+					<AiOutlineClose
+						color='white'
+						size={25}
+						className="ml-auto mr-0 cursor-pointer"
+						onClick={handleCloseSideBar} />
 				</div>
 				<div className='font-semibold text-lg mb-2'>Task Name</div>
 				<textarea className='multiline-input-field mb-7 w-full'
@@ -222,7 +227,7 @@ export default function Sidebar() {
 					value={description}
 				/>
 
-				<div className='grid grid-cols-1 md:grid-cols-2 gap-7 md:gap-4 items-center mb-7 text-lg'>
+				<div className='grid grid-cols-1 xl:grid-cols-2 gap-7 md:gap-4 items-center mb-7 text-lg'>
 					<div className='flex items-center'>
 						<span className='font-semibold'>Status&nbsp;:&nbsp;</span>
 						<DropDownMenu selectedOption={status?.toString()}
@@ -343,7 +348,7 @@ export default function Sidebar() {
 					</button>}
 				</div>
 			</div>
-		</animated.div>
+		</div>
 	)
 }
 
@@ -351,9 +356,10 @@ export default function Sidebar() {
 
 function InputTile({ inputValue, onRemove }: { inputValue: string, onRemove: () => void }) {
 	return (
-		<div className={`py-2 px-2 bg-slate-800 my-1 rounded flex justify-between items-center`}>
+		<div className={`py-2 px-2 bg-slate-800 my-1 rounded flex justify-between items- relative`}>
 			{inputValue}
-			<AiOutlineClose size={20} className='cursor-pointer' onClick={onRemove} />
+			<AiOutlineClose className='absolute -right-1 -top-1 bg-slate-400 text-slate-900 p-1 rounded-full cursor-pointer'
+				size={15} onClick={onRemove} />
 		</div>
 	)
 }

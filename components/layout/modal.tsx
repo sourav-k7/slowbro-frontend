@@ -17,7 +17,7 @@ export default function Modal({ children, onClose, isVisible }: PropType) {
 
 
 	return (
-		<div className={`absolute z-10 w-full h-full flex`}>
+		<div className={`absolute z-10 w-full h-screen flex`}>
 			<div onClick={onClose}
 				className={`absolute w-full h-full bg-black bg-opacity-50 `} />
 				<div className='relative m-auto'>

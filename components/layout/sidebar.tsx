@@ -207,7 +207,7 @@ export default function Sidebar() {
 
 
 	return (
-		<div className={`fixed right-0 top-0 ease-in-out duration-500 overflow-y-scroll h-full
+		<div className={`fixed right-0 top-0 ease-in-out duration-500 overflow-y-scroll h-full no-scrollbar
 		${isSidebarOpen ? "translate-x-0 w-full md:w-2/5 " : "translate-x-full w-0"}`}>
 			<div className=' w-full ease-in-out duration-700  bg-gray-900 py-3 px-5 no-scrollbar'>
 				<div>

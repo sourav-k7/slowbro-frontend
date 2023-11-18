@@ -37,7 +37,7 @@ export default function PreviouslyCompletedTask() {
 							id={tk._id}
 							key={tk._id}
 							point={tk.point}
-							handleClick={() => dispatch(selectTask({ id: tk._id, type: ListType.today } as SelectTaskPayloadType))}
+							handleClick={() =>{ dispatch(selectTask({ id: tk._id, type: ListType.previous } as SelectTaskPayloadType))}}
 							handleDrag={() => { setDragId(tk._id) }}
 							handleDrop={() => { handleDrop(tk._id) }}
 						/>

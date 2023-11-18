@@ -30,7 +30,7 @@ export interface TaskSwapType{
 export enum ListType {
 	pending = 'pending',
 	today = 'today',
-	previous = 'previos'
+	previous = 'previous'
 }
 
 export interface PreviousTaskServiceType{

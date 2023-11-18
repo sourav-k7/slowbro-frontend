@@ -135,7 +135,7 @@ export default function ActiveTile({ task }: PropType) {
 				</span>
 			</div>
 			<div className='font-semibold '>Description</div>
-			<div className='bg-slate-700 mb-3 p-3 rounded'>{task.description != '' ? task.description : "No description"}</div>
+			<div className='bg-slate-700 mb-3 p-3 rounded whitespace-pre-line'>{task.description != '' ? task.description : "No description"}</div>
 			{/* <div>Image</div> */}
 			<div className='font-semibold'>SubTask</div>
 			<div className='bg-slate-700 p-3 rounded mb-3'>
@@ -180,7 +180,7 @@ export default function ActiveTile({ task }: PropType) {
 						"No comments" :
 						task.comments.map((comment, index) => {
 							return (
-								<div key={index} className={`py-2 px-2 bg-slate-800 my-1 rounded flex justify-between items-center relative`}>
+								<div key={index} className={`py-2 px-2 bg-slate-800 my-1 rounded flex justify-between items-center relative whitespace-pre-line`}>
 									{comment}
 									<AiOutlineClose className='absolute -right-1 -top-1 bg-slate-400 text-slate-900 p-1 rounded-full cursor-pointer'
 										size={15} onClick={() => removeComment(comment)} />

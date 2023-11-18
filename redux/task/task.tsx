@@ -42,7 +42,7 @@ const taskSlice = createSlice({
 				state.selectedTask = state.todayCompleted.find(tk => tk._id == action.payload.id);
 			}
 			else if (action.payload.type == ListType.previous) {
-				state.selectedTask = state.previouslyCompletedTask.find(tk => tk._id == action.payload.type);
+				state.selectedTask = state.previouslyCompletedTask.find(tk => tk._id == action.payload.id);
 			}
 			state.isSidebarOpen = true;
 		},

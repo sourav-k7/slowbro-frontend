@@ -3,6 +3,7 @@ import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useAppDispatch } from '../hooks/redux_hooks';
 import { getProfile, loginRequest } from '../redux/user/userServices';
+import Head from 'next/head';
 
 
 const Home: NextPage = () => {
@@ -42,6 +43,10 @@ async function onLogin() {
 
   return (
     <div >
+      <Head>
+        <title>Project Management App - Slowpoke Todo </title>
+        <meta name='description' content='The best and free project management app, favored by agile teams everywhere. Try it free or buy now' />
+      </Head>
       <div className='w-full px-3 md:px-0 md:w-1/4 m-auto pt-32'>
         <div className='text-primary text-3xl font-semibold text-center mb-5'>Login</div>
         <div className='text-body mb-1'>Email</div>

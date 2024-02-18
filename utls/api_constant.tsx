@@ -1,6 +1,6 @@
 export abstract class ApiConstants {
-	// static  readonly baseUrl : string = "http://localhost:5000/api/v1";
-	static  readonly baseUrl : string = "https://w4goxgt3ye.execute-api.ap-south-1.amazonaws.com/dev/api/v1";
+	static  readonly baseUrl : string = "http://localhost:5000/api/v1";
+	// static  readonly baseUrl : string = "https://w4goxgt3ye.execute-api.ap-south-1.amazonaws.com/dev/api/v1";
 	//auth
 	static readonly loginApi : string =  '/auth/login';
 	static readonly registractionApi : string =  '/auth/signup';

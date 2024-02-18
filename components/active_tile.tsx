@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { AiOutlineClose } from 'react-icons/ai';
 import { BiEdit } from 'react-icons/bi';
 import { useAppDispatch, useAppSelector } from '../hooks/redux_hooks';
-import { Doubt, Subtask, Task, TaskStatus } from '../model/task';
+import { Doubt, Link, Subtask, Task, TaskStatus } from '../model/task';
 import { selectTask } from '../redux/task/task';
 import { completeTask, updateTask } from '../redux/task/taskServices';
 import { ListType, SelectTaskPayloadType } from '../redux/task/taskTypes';
@@ -11,6 +11,7 @@ import DropDownMenu from './layout/drop_down_menu';
 import priorityIcon from './layout/priorityIcon';
 import QuestionTile from './layout/question_tile';
 import SubtaskTile from './sub_task_tile';
+import LinkChip from './layout/link_chip';
 
 interface PropType {
 	task: Task,
@@ -22,6 +23,7 @@ export default function ActiveTile({ task }: PropType) {
 	const [status, setStatus] = useState(task.status);
 	const [subTask, setSubTask] = useState<Subtask[]>(task.subtask);
 	const [doubt, setDoubt] = useState<Doubt[]>(task.doubt);
+	const [links, setLinks] = useState<Link[]>(task.links);
 
 	useEffect(() => {
 		setStatus(task.status);
@@ -106,6 +108,12 @@ export default function ActiveTile({ task }: PropType) {
 		handleUpdateTask('doubt', latestState);
 	}
 
+	function removeLink(rmLink: Link) {
+		let newLinksState: Link[] = [];
+		newLinksState = links.filter(link => link._id != rmLink._id || link.title != rmLink.title);
+		setLinks(newLinksState);
+		handleUpdateTask('links', newLinksState);
+	}
 
 	return (
 		<div className='my-3 p-3 bg-slate-800 rounded-md'>
@@ -134,6 +142,14 @@ export default function ActiveTile({ task }: PropType) {
 					Priority: &ensp; {priorityIcon(task.priority)}  {task.priority}
 				</span>
 			</div>
+			{links?.length > 0 && <div className='font-semibold '>Links</div>}
+			{links?.length > 0 && <div className='mb-3 py-3 rounded whitespace-pre-line'>
+				{links.map((link, index) => <LinkChip
+					key={index}
+					bgColor='bg-slate-700'
+					link={link}
+					onRemove={removeLink} />)}
+			</div>}
 			<div className='font-semibold '>Description</div>
 			<div className='bg-slate-700 mb-3 p-3 rounded whitespace-pre-line'>{task.description != '' ? task.description : "No description"}</div>
 			{/* <div>Image</div> */}

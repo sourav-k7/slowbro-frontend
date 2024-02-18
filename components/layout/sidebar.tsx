@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react'
 // import { animated, useSpring } from 'react-spring'
 import { AiOutlineClose } from 'react-icons/ai';
-import { Task, Subtask, Doubt, TaskStatus, PriorityType } from '../../model/task';
+import { Task, Subtask, Doubt, TaskStatus, PriorityType, Link } from '../../model/task';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux_hooks';
 import { completeTask, createTask, deleteTask, updateTask } from '../../redux/task/taskServices';
 import { closeSidebar, markAsUncompleteTask } from '../../redux/task/task';
 import SubtaskTile from '../sub_task_tile';
 import DropDownMenu from './drop_down_menu';
 import priorityIcon from './priorityIcon';
+import { FaCheck } from 'react-icons/fa';
+import LinkChip from './link_chip';
 
 
 export default function Sidebar() {
 	const dispatch = useAppDispatch();
 	const isSidebarOpen = useAppSelector(state => state.task.isSidebarOpen);
 	const task = useAppSelector(state => state.task.selectedTask);
-	// let sidebarWidth = 300;
 	const [name, setName] = useState('');
 	const [description, setDescription] = useState('');
 	const [status, setStatus] = useState<TaskStatus>(TaskStatus.unstarted);
@@ -26,21 +27,12 @@ export default function Sidebar() {
 	const [doubt, setDoubt] = useState<Doubt[]>([]);
 	const [newDoubtInput, setNewDoubtInput] = useState('');
 	const [comments, setComments] = useState<string[]>([]);
+	const [linkTitleInput, setLinkTitleInput] = useState('');
+	const [linkUrlInput, setLinkUrlInput] = useState('');
 	const [newCommentInput, setNewCommentInput] = useState('');
+	const [links, setLinks] = useState<Link[]>([]);
 	const project = useAppSelector(state => state.task.selectedProject);
 
-	// if (typeof window !== 'undefined') {
-	// 	if (window.innerWidth >= 768) {
-	// 		sidebarWidth = (2 * window.innerWidth) / 5;
-	// 	}
-	// 	else {
-	// 		sidebarWidth = window.innerWidth;
-	// 	}
-	// }
-
-	// const sidebarStyle = useSpring({
-	// 	width: isSidebarOpen ? sidebarWidth : 0
-	// });
 
 	useEffect(() => {
 		if (task != null) {
@@ -53,6 +45,7 @@ export default function Sidebar() {
 			setComments(task.comments);
 			setStatusOption(Object.values(TaskStatus));
 			setPriority(task.priority ?? PriorityType.low);
+			setLinks(task.links ?? []);
 		} else {
 			setName('');
 			setDescription('');
@@ -63,6 +56,7 @@ export default function Sidebar() {
 			setStatus(TaskStatus.unstarted);
 			setStatusOption([TaskStatus.unstarted, TaskStatus.started]);
 			setPriority(PriorityType.low);
+			setLinks([]);
 		}
 	}, [isSidebarOpen, task])
 
@@ -144,6 +138,7 @@ export default function Sidebar() {
 			priority,
 			project: project!._id,
 			orderId: (new Date().getTime()),
+			links: links
 		} as Task));
 		handleCloseSideBar();
 	}
@@ -160,6 +155,7 @@ export default function Sidebar() {
 			point,
 			priority,
 			project: project!._id,
+			links: links
 		} as Task));
 
 		if (status == TaskStatus.completed) {
@@ -204,7 +200,30 @@ export default function Sidebar() {
 		handleCloseSideBar();
 	}
 
+	function addHttpsIfMissing(url: string) {
+		if (!url.startsWith("http://") && !url.startsWith("https://")) {
+			url = "https://" + url;
+		}
+		return url;
+	}
 
+	function handleAddLink() {
+		setLinks(state => [...state, {
+			title: linkTitleInput,
+			path: addHttpsIfMissing(linkUrlInput)
+		} as Link])
+		setLinkUrlInput("");
+		setLinkTitleInput("");
+	}
+
+	function handleRemoveLink(rmLink: Link) {
+		setLinks(
+			state => {
+				let newState = state.filter(link => link._id != rmLink._id || link.title != rmLink.title);
+				return newState;
+			}
+		);
+	}
 
 	return (
 		<div className={`fixed right-0 top-0 ease-in-out duration-500 overflow-y-scroll h-full no-scrollbar
@@ -312,6 +331,41 @@ export default function Sidebar() {
 				<button className='btn-primary py-1 mt-3 w-full mb-7' onClick={addComment}>
 					Add comment
 				</button>
+
+				<div className='mb-2 font-semibold text-lg'>Links</div>
+				<div className='mb-4'>
+					{
+						links.map((link, index) => {
+							return <LinkChip
+								link={link}
+								key={index}
+								onRemove={handleRemoveLink}
+								bgColor='bg-slate-800'
+							/>
+						})
+					}
+				</div>
+				<div className='mb-7 font-semibold text-lg'>
+					<div className='block lg:flex gap-7 md:gap-4 items-center'>
+						<input
+							className='input-field w-full lg:w-[30%]'
+							placeholder='Title'
+							onChange={(event) => setLinkTitleInput(event.target.value.trim())}
+							value={linkTitleInput}
+						/>
+						<input className='input-field grow w-full lg:w-[30%] my-4 lg:my-0'
+							placeholder='URL'
+							onChange={(event) => setLinkUrlInput(event.target.value.trim())}
+							value={linkUrlInput}
+						/>
+						<button className='btn-primary cursor-pointer w-full lg:w-auto'
+							onClick={handleAddLink}
+						>
+							<span className='inline lg:hidden'>Add Link</span>
+							<FaCheck className='hidden lg:inline' />
+						</button>
+					</div>
+				</div>
 
 				<div className='font-semibold flex items-center mb-8 text-lg'>
 					Point&nbsp;:&nbsp;

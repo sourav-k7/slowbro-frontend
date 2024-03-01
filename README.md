@@ -22,8 +22,8 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 {taskid}-{small-task-description}
 
 For example: <br>
-&nbsp;Lets say we have a task `#2 - implement project sharing feature`<br>
-&nbsp;Branch name will be `2-project-sharing-feature`
+&nbsp;Let's say we have a task `#2 - implement project sharing feature`<br>
+&nbsp; then the Branch name will be `2-project-sharing-feature`
 
 ## Feature to implement
 [ ] #1 Show unique numerical ids for task <br>
@@ -45,7 +45,7 @@ For example: <br>
 > - Way to add other task as blocker to some task as task id
 > - UI wise it should be show in a shade of red in Todo list
 
-[ ] #5 Feature to mark project complete
+[ ] #5 Feature to mark project as complete
 
 [ ] #6 Implement Forgot password page
 > - Implement UI where user can share their email of their account

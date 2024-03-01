@@ -1,34 +1,54 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Slowpoke Todo
+## Project setup
 
-## Getting Started
+### Clone Slowpoke
+```bash
+git clone https://github.com/sourav-k7/slowbro-frontend.git
+```
 
-First, run the development server:
+### Build Slowpoke
+```bash
+npm install
+```
 
+### Run Slowpoke
 ```bash
 npm run dev
-# or
-yarn dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Branch naming convention
+{taskid}-{small-task-description}
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+For example: <br>
+&nbsp;Lets say we have a task `#2 - implement project sharing feature`<br>
+&nbsp;Branch name will be `2-project-sharing-feature`
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Feature to implement
+[ ] #1 Show unique numerical ids for task <br>
+> - Show in active task tile and sidebar as well
+> - These ids will be generated once the  task is created
+> - Good solution need to be found for assigning unique numerical ids in mongodb
 
-## Learn More
+[ ] #2 Show task ids in url
+> - TaskIds should be appened as query string in url if opened in sidebar
+> - Automatically open sidebar if ids present in a url
 
-To learn more about Next.js, take a look at the following resources:
+[ ] #3 Show new field in tasks
+> - Start Date (auto populate and option for custom date selector)
+> - End Date (auto populate and option for custom date selector)
+> - Tags
+> - Show these field in active task and sidebar
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+[ ] #4 Feature to add blocker task to current task
+> - Way to add other task as blocker to some task as task id
+> - UI wise it should be show in a shade of red in Todo list
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+[ ] #5 Feature to mark project complete
 
-## Deploy on Vercel
+[ ] #6 Implement Forgot password page
+> - Implement UI where user can share their email of their account
+> - If email exist in DB then send then email with password reset Url or else show account don't exist
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+[ ] #7 Feature to add subtask directly from active tile

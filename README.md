@@ -26,10 +26,9 @@ For example: <br>
 &nbsp; then the Branch name will be `2-project-sharing-feature`
 
 ## Feature to implement
-[ ] #1 Show unique numerical ids for task <br>
+[ ] #1 Show unique ids for task <br>
 > - Show in active task tile and sidebar as well
 > - These ids will be generated once the  task is created
-> - Good solution need to be found for assigning unique numerical ids in mongodb
 
 [ ] #2 Show task ids in url
 > - TaskIds should be appened as query string in url if opened in sidebar
